@@ -5,5 +5,6 @@ int main() {
 	fp = getStream(fp);
 	token_info * tok = getNextToken(fp);
 	printf("First token is %s\n", tok->token);
+	printf("creating merge conflict");
 	return 0;
 }
