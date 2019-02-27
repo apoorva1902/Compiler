@@ -1,5 +1,11 @@
 #include "lexer.h"
 
+int isbcd(char x)
+{
+	if(x=='b'||x=='c'||x=='d')
+		return 1;
+	return 0;
+}
 int isLa(char x)
 {	
 	if(x>='a'&&x<='z')
@@ -14,13 +20,13 @@ int isLA(char x)
 }
 int isD1(char x)
 {
-	if(x>='2' && x<='4' )
+	if(x>='0' && x<='9' )
 		return 1;
 	return 0;
 }
 int isD2(char x)
 {
-	if(x>='0' && x<='9')
+	if(x>='2' && x<='7')
 		return 1;
 	return 0;
 }
@@ -220,7 +226,21 @@ token_info * getNextToken(FILE *fp) {
 						tok->lexeme[lexPtr++]=currChar;
 						state=15;
 						break;
-
+					case 'b':case 'c':case 'd':
+						tok->lexeme[lexPtr++]=currChar;
+						state=11;
+						
+						break;
+					case 'a':case 'e' ... 'z':
+						tok->lexeme[lexPtr++]=currChar;
+						state=9;
+						
+						break;
+					case '0'... '9':
+						tok->lexeme[lexPtr++]=currChar;
+						state=4;
+						
+						break;	
 
 
 
@@ -580,7 +600,7 @@ token_info * getNextToken(FILE *fp) {
 				else
 				{
 					currPtr--;
-					state=109;
+					state=109;//error state
 				}
 				break;
 			case 16:
@@ -639,11 +659,163 @@ token_info * getNextToken(FILE *fp) {
 					return tok;
 							
 					
-				}	
-
+				}
+			case 11:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=9;
+						
+				}
+				else if(isD2(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=12;
+						
+				}
+				else
+				{
+					currPtr--;
+					state=10;
+				}
 				break;
+			case 12:
+				if(isbcd(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=12;
+				}
+				else if(isD2(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=13;
+				}
+				else
+				{
+					currPtr--;
+					state=14;
+				}
+				break;
+			case 13:
+				if(isD2(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=13;
+				}
+				else
+				{
+					currPtr--;
+					state=14;
+				}
+				break;
+			case 14:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_ID");
+						return tok;
+						break;
+				}
+				break;
+			case 9:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=9;
+				}
+				else
+				{
+					currPtr--;
+					state=10;
+				}
+				break;
+			case 10:
+				currPtr--;
+				
+				//do keyword table implementsiom
 
 
+				//char* keyword_token=keyword_table(tok->lexeme);
+				//if(strcmp(keyword_token,"-1")!=0)
+				{
+					//tok->line_number=line_number;
+					//strcpy(tok->token,keyword_token);
+					//return tok;
+				}	
+				//else
+				{
+					tok->line_number=line_number;
+					strcpy(tok->token,"TK_FIELDID");
+					return tok;
+
+				}
+				break;
+			case 4:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=4;	
+				}
+				else if (currChar=='.')
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=5;
+				}
+				else
+				{
+					currPtr--;
+					state=8;
+				}
+				break;
+			case 8:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_NUM");
+						return tok;
+						break;
+				}
+				break;
+			case 5:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=6;
+					
+				}
+				else
+				{
+					currPtr--;
+					state=110;//error state
+				}
+				break;
+			case 6:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=7;
+					
+				}
+				else
+				{
+					currPtr--;
+					state=111;//error state
+				}
+				break;
+			case 7:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_RNUM");
+						return tok;
+						break;
+				}
 
 
 
@@ -778,6 +950,19 @@ token_info * getNextToken(FILE *fp) {
 				
 				break;
 			case 110:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 111:
 				switch(currChar)
 				{
 					default:
