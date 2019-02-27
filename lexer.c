@@ -1,5 +1,30 @@
 #include "lexer.h"
 
+int isLa(char x)
+{	
+	if(x>='a'&&x<='z')
+		return 1;
+	return 0;
+}
+int isLA(char x)
+{
+	if(x>='A'&& x<='Z')
+		return 1;
+	return 0;
+}
+int isD1(char x)
+{
+	if(x>='2' && x<='4' )
+		return 1;
+	return 0;
+}
+int isD2(char x)
+{
+	if(x>='0' && x<='9')
+		return 1;
+	return 0;
+}
+
 FILE *getStream(FILE *fp) {
 	//printf("%u %u %u\n", buf, buf1,buf2);
 	
@@ -509,6 +534,114 @@ token_info * getNextToken(FILE *fp) {
 				}
 				break;
 
+			case 20:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=21;
+				}
+				else
+				{
+					currPtr--;
+					state=108;//error state
+				}
+				break;
+			case 21:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=21;
+				}
+				else
+				{
+					currPtr--;
+					state=22;
+					
+				}
+				break;
+			case 22:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_RECORDID");
+						return tok;
+						break;	
+
+				}
+				break;
+			case 15:
+				if(isLa(currChar)|| isLA(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=16;
+				}
+				else
+				{
+					currPtr--;
+					state=109;
+				}
+				break;
+			case 16:
+				if(isLa(currChar)|| isLA(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=16;
+				}
+				else if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=18;
+				}
+				else 
+				{
+					currPtr--;
+					state=17;
+				}	
+				break;
+			case 18:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=18;
+				}
+				else
+				{
+					currPtr--;
+					state=19;
+				}
+				break;
+			case 19:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_FUNID");
+						return tok;
+						break;
+				}
+				break;
+			case 17:
+				if(strcmp(tok->lexeme,"_main")==0)
+				{
+					currPtr--;
+					tok->line_number=line_number;
+					strcpy(tok->token,"TK_MAIN");
+					return tok;
+				}
+				else
+				{
+					currPtr--;
+					tok->line_number=line_number;
+					strcpy(tok->token,"TK_FUNID");
+					return tok;
+							
+					
+				}	
+
+				break;
 
 
 
@@ -632,6 +765,19 @@ token_info * getNextToken(FILE *fp) {
 				
 				break;
 			case 109:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 110:
 				switch(currChar)
 				{
 					default:
