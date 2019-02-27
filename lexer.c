@@ -52,9 +52,10 @@ token_info * getNextToken(FILE *fp) {
 		{	
 		}*/
 		//printf("%u %u %u %i %c\n", buf, buf1,buf2,i,currChar);
+		int a=4;
 		switch(state) {
 			case 1:
-				switch(currChar) {
+				switch(currChar) {//state =3 incorporated int the same switch later shd be differented  in a different switch
 					case '+':
 						tok->lexeme[lexPtr++] = currChar;
 						state=2;
