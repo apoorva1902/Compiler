@@ -170,6 +170,48 @@ token_info * getNextToken(FILE *fp) {
 						tok->lexeme[lexPtr++]=currChar;
 						state=33;
 						break;
+
+					case '!':
+						tok->lexeme[lexPtr++]=currChar;
+						state=31;
+						break;
+					case '=':
+						tok->lexeme[lexPtr++]=currChar;
+						state=29;
+						break;
+					case '&':
+						tok->lexeme[lexPtr++]=currChar;
+						state=26;
+						break;
+					case '@':
+						tok->lexeme[lexPtr++]=currChar;
+						state=23;
+						break;
+					case '#':
+						tok->lexeme[lexPtr++]=currChar;
+						state=20;
+						break;
+					case '_':
+						tok->lexeme[lexPtr++]=currChar;
+						state=15;
+						break;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					//add all other cases above
+
 					case '$':
 						tok->lexeme[lexPtr++] = currChar;
 						tok->line_number=line_number;
@@ -193,7 +235,7 @@ token_info * getNextToken(FILE *fp) {
 						if(currChar=='\n')
 							line_number++;
 						state=43;
-						return tok;
+						
 						break;
 
 					default:
@@ -207,7 +249,8 @@ token_info * getNextToken(FILE *fp) {
 				{
 					default:
 						currPtr--;//retract '$'
-						state=1;
+						//dont write state=1; here and similarly everywhere
+						return tok;
 						break;
 				}
 				break;
@@ -236,6 +279,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_LE");
 						currPtr--;//backtrack this character
+						
 						return tok;
 						break;
 				}
@@ -275,6 +319,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_ASSIGNOP");
 						currPtr--;//backtrack this character
+						
 						return tok;
 
 						break;
@@ -288,6 +333,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_LT");
 						currPtr--;//bactract this character
+						
 						return tok;
 				}
 				break;
@@ -311,6 +357,7 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_GE");
+						
 						return tok;
 						break; 
 				}
@@ -322,20 +369,165 @@ token_info * getNextToken(FILE *fp) {
 							currPtr--;
 							tok->line_number=line_number;
 							strcpy(tok->token,"TK_GT");
+							
 							return tok;
 							break;
 
 				}
 				break;
-			
 
+			case 31:
+				switch(currChar)
+				{
+					case '=':
+						tok->lexeme[lexPtr++]=currChar;
+						state=32;
+						break;
+					default:
+						currPtr--;
+						state=103;//error state
+						break;	
+				}
+				break;
+			case 32:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_NE");
+						
+						return tok;
+
+						break;
+				}
+				break;
+			case 29:
+				switch(currChar)
+				{
+					case '=':
+						tok->lexeme[lexPtr++]=currChar;
+						state=30;
+						break;
+					default:
+						currPtr--;
+						state=104;//error state
+						break;
+				}
+				break;
+			case 30:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_EQ");
+						return tok;
+						break;
+				}
+				break;
+			case 26:
+				switch(currChar)
+				{
+					case '&':
+						tok->lexeme[lexPtr++]=currChar;
+						state=27;
+						break;
+					default:
+						currPtr--;
+						state=105;//error state
+						break;
+				}
+				break;
+			case 27:
+				switch(currChar)
+				{
+					case '&':
+						tok->lexeme[lexPtr++]=currChar;
+						state=28;
+						break;
+					
+					default:
+						currPtr--;
+						state=106;//error state
+						break;
+
+				}
+				break;
+			case 28:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_AND");
+							
+						return tok;
+						break;
+
+				}
+				break;
+			case 23:
+				switch(currChar)
+				{
+					case '@':
+						tok->lexeme[lexPtr++]=currChar;
+						state=24;
+						break;
+					default:
+						currPtr--;
+						state=106;//error state
+						break;
+				}
+				break;
+			case 24:
+				switch(currChar)
+				{
+					case '@':
+						tok->lexeme[lexPtr++]=currChar;
+						state=25;
+						break;
+					
+					default:
+						currPtr--;
+						state=107;//error state
+						break;
+
+				}
+				break;
+			case 25:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_OR");
+							
+						return tok;
+						break;
+
+				}
+				break;
+
+
+
+
+
+
+
+
+
+			//add other cases above	
 			case 100:
 				//source code finish state
 				//is never executed
 				break;
-			//error states from 101
-			//for now simply return the lexeme with TK_ERROR
-			//later can be modifed case wise	
+
+
+			/*error states from 101
+			 *for now simply return the lexeme with TK_ERROR
+			 *later can be modifed case wise	
+			*/
 			case 101:
 				switch(currChar)
 				{
@@ -343,6 +535,7 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;//backtract this character
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
+						//dont write state=1; here
 						return tok;
 						break;
 				}
@@ -354,15 +547,103 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;//backtract this character
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
+						
 						return tok;
 						break;
 				}
 				
 				break;
-
-
-
-
+			case 103:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 104:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 105:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;		
+			case 106:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 107:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 108:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 109:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
 		}		
 	}
 }
