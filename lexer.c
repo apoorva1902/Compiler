@@ -52,7 +52,11 @@ token_info * getNextToken(FILE *fp) {
 		{	
 		}*/
 		//printf("%u %u %u %i %c\n", buf, buf1,buf2,i,currChar);
-		int a=4;
+		
+		//vip In each iteration either do 
+		// currPtr--(backtracking this character(not using))
+		//or
+		// tok->lexeme[lexPtr++]=currChar;//putting this char in lexeme
 		switch(state) {
 			case 1:
 				switch(currChar) {//state =3 incorporated int the same switch later shd be differented  in a different switch
@@ -161,7 +165,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->lexeme[lexPtr++] = currChar;
 						tok->line_number=line_number;
 						strcpy(tok->token,"Dollar");
-						state=100;
+						state=100;//source code finish state
 						return tok;	
 					case '<':
 						tok->lexeme[lexPtr++]=currChar;
@@ -215,7 +219,19 @@ token_info * getNextToken(FILE *fp) {
 					default:
 						currPtr--;//retract this character
 						state=41;
+						break;
 
+				}
+				break;
+			case 37:
+				switch(currChar)
+				{
+					default:
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_LE");
+						currPtr--;//backtrack this character
+						return tok;
+						break;
 				}
 				break;
 			case 38:
@@ -225,6 +241,11 @@ token_info * getNextToken(FILE *fp) {
 						tok->lexeme[lexPtr++]=currChar;
 						state=39;
 						break;
+					default:
+						currPtr--;//backtrack this character
+						state=101;//error state 
+						break;
+
 
 				}
 				break;
@@ -235,6 +256,10 @@ token_info * getNextToken(FILE *fp) {
 						tok->lexeme[lexPtr++]=currChar;
 						state=40;
 						break;
+					default:
+						currPtr--;//backtrack this character
+						state=102;//error state
+						break;
 				}
 				break;
 			case 40:
@@ -243,12 +268,52 @@ token_info * getNextToken(FILE *fp) {
 					default:
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_ASSIGNOP");
-						currPtr--;
+						currPtr--;//backtrack this character
 						return tok;
 
 						break;
 						
 				}
+				break;
+			case 41:
+				switch(currChar)
+				{
+					default:
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_LT");
+						currPtr--;//bactract this character
+						return tok;
+				}
+				break;
+			case 100:
+				//source code finish state
+				//is never executed
+				break;
+			//error states from 101
+			//for now simply return the lexeme with TK_ERROR
+			//later can be modifed case wise	
+			case 101:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						return tok;
+						break;
+				}
+				break;
+			case 102:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						return tok;
+						break;
+				}
+				
 				break;
 
 
