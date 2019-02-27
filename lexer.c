@@ -53,10 +53,11 @@ token_info * getNextToken(FILE *fp) {
 		}*/
 		//printf("%u %u %u %i %c\n", buf, buf1,buf2,i,currChar);
 		
-		//vip In each iteration either do 
-		// currPtr--(backtracking this character(not using))
-		//or
-		// tok->lexeme[lexPtr++]=currChar;//putting this char in lexeme
+		/*vip In each iteration(in each separate case statement) either do 
+		* currPtr--(backtracking this character(not using))
+		* or
+		* tok->lexeme[lexPtr++]=currChar;//putting this char in lexeme
+		*/
 		switch(state) {
 			case 1:
 				switch(currChar) {//state =3 incorporated int the same switch later shd be differented  in a different switch
@@ -161,17 +162,22 @@ token_info * getNextToken(FILE *fp) {
 					case '%':
 						state=42;
 						break;
+					case '<':
+						tok->lexeme[lexPtr++]=currChar;
+						state=36;
+						break;
+					case '>':
+						tok->lexeme[lexPtr++]=currChar;
+						state=33;
+						break;
 					case '$':
 						tok->lexeme[lexPtr++] = currChar;
 						tok->line_number=line_number;
 						strcpy(tok->token,"Dollar");
 						state=100;//source code finish state
-						return tok;	
-					case '<':
-						tok->lexeme[lexPtr++]=currChar;
-						state=36;
-						break;
-
+						return tok;
+						break;	
+					
 				}
 				break;
 			case 42:
@@ -285,6 +291,44 @@ token_info * getNextToken(FILE *fp) {
 						return tok;
 				}
 				break;
+			case 33:
+				switch(currChar)
+				{
+					case '=':
+						tok->lexeme[lexPtr++]=currChar;
+						state=34;
+						break;
+					default:
+						currPtr--;
+						state=35;
+						break;
+				}
+				break;
+			case 34:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_GE");
+						return tok;
+						break; 
+				}
+				break;
+			case 35:
+				switch(currChar)
+				{
+						default:
+							currPtr--;
+							tok->line_number=line_number;
+							strcpy(tok->token,"TK_GT");
+							return tok;
+							break;
+
+				}
+				break;
+			
+
 			case 100:
 				//source code finish state
 				//is never executed
