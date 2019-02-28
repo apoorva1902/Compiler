@@ -1,4 +1,156 @@
+
 #include "lexer.h"
+
+//Key word table hash table implementation adjust this code in lexer.h 
+typedef struct 
+{
+	char key[TOKEN_SIZE];
+	char value[TOKEN_SIZE+3];
+	//struct table_entry* next;	
+}table_entry;
+int keyword_table_size=100;
+table_entry keyword_table[100];
+
+int hash(char str[TOKEN_SIZE])//,int keyword_table_size)
+{
+	int i=0,sum=0;
+	while(str[i]!='\0')
+	{
+		sum+=str[i];
+		i++;
+	}
+	return sum%keyword_table_size;
+} 
+
+
+void add_keyword_table(char key[TOKEN_SIZE],char value[TOKEN_SIZE])
+{
+	//printf("%s\n",key );
+	int index=hash(key);
+	printf("%d\n",index );
+	if(strcmp(keyword_table[index].key,"-1")!=0)
+	{
+		int j=index+1;
+		for(;j!=index;)
+		{
+			if(strcmp(keyword_table[j].key,"-1")==0)
+			{	
+				index=j;
+				break;
+			}
+			j=j+1<100?j+1:0;
+	
+		}
+	}	
+	table_entry* temp=&keyword_table[index];
+	/*while(temp->next!=NULL)
+	{
+		temp=temp->next;
+	}*/
+
+	strcpy(temp->key,key);
+	strcpy(temp->value,value);
+	//temp->next=(table_entry*)malloc(sizeof(table_entry));
+	//initialize(temp->next);//->next=NULL;
+
+}
+char* find_keyword_table(char key[TOKEN_SIZE])
+{
+	int index=hash(key);
+	//printf("%d\n", index);
+	/*table_entry* temp=&keyword_table[index];
+	table_entry* prev=NULL;//keyword_table[index];
+	
+	while(temp->next!=NULL)
+	{
+		prev=temp;
+		temp=temp->next;
+	}
+	if(prev!=NULL)
+		return prev->value;
+	else
+		return "-1";*/
+	int j=index,flag=0,i=0;
+	
+		for(i=0;i<100;i++)
+		{
+			if(strcmp(keyword_table[j].key,key)==0)
+			{	
+				index=j;
+				flag=1;
+				break;
+			}
+			j=j+1<100?j+1:0;
+	
+		}
+		if(flag==1)
+			return keyword_table[index].value;
+		else
+			return "-1";
+
+}
+void initializekt()
+{
+	for(int i=0;i<100;i++)
+	{
+		strcpy(keyword_table[i].key,"-1");
+		//keyword_table[i].next=NULL;
+	}
+	add_keyword_table("with","TK_WITH");
+	add_keyword_table("parameters","TK_PARAMETERS");
+	add_keyword_table("end","TK_END");
+	add_keyword_table("while","TK_WHILE");
+	add_keyword_table("type","TK_TYPE");
+	add_keyword_table("_main","TK_MAIN");
+	add_keyword_table("global","TK_GLOBAL");
+	add_keyword_table("parameter","TK_PARAMETER");
+	add_keyword_table("list","TK_LIST");
+	add_keyword_table("input","TK_INPUT");
+	add_keyword_table("output","TK_OUTPUT");
+	add_keyword_table("int","TK_INT");
+	add_keyword_table("real","TK_REAL");
+	add_keyword_table("endwhile","TK_ENDWHILE");
+	add_keyword_table("if","TK_IF");
+	add_keyword_table("then","TK_THEN");
+	add_keyword_table("endif","TK_ENDIF");
+	add_keyword_table("read","TK_READ");
+	add_keyword_table("write","TK_WRITE");
+	add_keyword_table("return","TK_RETURN");
+	add_keyword_table("call","TK_CALL");
+	add_keyword_table("record","TK_RECORD");
+	add_keyword_table("endrecord","TK_ENDRECORD");
+	add_keyword_table("else","TK_ELSE");
+}
+int isbcd(char x)
+{
+	if(x=='b'||x=='c'||x=='d')
+		return 1;
+	return 0;
+}
+int isLa(char x)
+{	
+	if(x>='a'&&x<='z')
+		return 1;
+	return 0;
+}
+int isLA(char x)
+{
+	if(x>='A'&& x<='Z')
+		return 1;
+	return 0;
+}
+int isD1(char x)
+{
+	if(x>='0' && x<='9' )
+		return 1;
+	return 0;
+}
+int isD2(char x)
+{
+	if(x>='2' && x<='7')
+		return 1;
+	return 0;
+}
 
 FILE *getStream(FILE *fp) {
 	//printf("%u %u %u\n", buf, buf1,buf2);
@@ -195,7 +347,21 @@ token_info * getNextToken(FILE *fp) {
 						tok->lexeme[lexPtr++]=currChar;
 						state=15;
 						break;
-
+					case 'b':case 'c':case 'd':
+						tok->lexeme[lexPtr++]=currChar;
+						state=11;
+						
+						break;
+					case 'a':case 'e' ... 'z':
+						tok->lexeme[lexPtr++]=currChar;
+						state=9;
+						
+						break;
+					case '0'... '9':
+						tok->lexeme[lexPtr++]=currChar;
+						state=4;
+						
+						break;	
 
 
 
@@ -509,8 +675,268 @@ token_info * getNextToken(FILE *fp) {
 				}
 				break;
 
+			case 20:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=21;
+				}
+				else
+				{
+					currPtr--;
+					state=108;//error state
+				}
+				break;
+			case 21:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=21;
+				}
+				else
+				{
+					currPtr--;
+					state=22;
+					
+				}
+				break;
+			case 22:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_RECORDID");
+						return tok;
+						break;	
+
+				}
+				break;
+			case 15:
+				if(isLa(currChar)|| isLA(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=16;
+				}
+				else
+				{
+					currPtr--;
+					state=109;//error state
+				}
+				break;
+			case 16:
+				if(isLa(currChar)|| isLA(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=16;
+				}
+				else if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=18;
+				}
+				else 
+				{
+					currPtr--;
+					state=17;
+				}	
+				break;
+			case 18:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=18;
+				}
+				else
+				{
+					currPtr--;
+					state=19;
+				}
+				break;
+			case 19:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_FUNID");
+						return tok;
+						break;
+				}
+				break;
+			case 17:
+				if(strcmp(tok->lexeme,"_main")==0)
+				{
+					currPtr--;
+					tok->line_number=line_number;
+					strcpy(tok->token,"TK_MAIN");
+					return tok;
+				}
+				else
+				{
+					currPtr--;
+					tok->line_number=line_number;
+					strcpy(tok->token,"TK_FUNID");
+					return tok;
+							
+					
+				}
+			case 11:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=9;
+						
+				}
+				else if(isD2(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=12;
+						
+				}
+				else
+				{
+					currPtr--;
+					state=10;
+				}
+				break;
+			case 12:
+				if(isbcd(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=12;
+				}
+				else if(isD2(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=13;
+				}
+				else
+				{
+					currPtr--;
+					state=14;
+				}
+				break;
+			case 13:
+				if(isD2(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=13;
+				}
+				else
+				{
+					currPtr--;
+					state=14;
+				}
+				break;
+			case 14:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_ID");
+						return tok;
+						break;
+				}
+				break;
+			case 9:
+				if(isLa(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=9;
+				}
+				else
+				{
+					currPtr--;
+					state=10;
+				}
+				break;
+			case 10:
+				currPtr--;
+				
+				//do keyword table implementsiom
 
 
+				char* keyword_token=find_keyword_table(tok->lexeme);
+				if(strcmp(keyword_token,"-1")!=0)
+				{
+					tok->line_number=line_number;
+					strcpy(tok->token,keyword_token);
+					return tok;
+				}	
+				else
+				{
+					tok->line_number=line_number;
+					strcpy(tok->token,"TK_FIELDID");
+					return tok;
+
+				}
+				break;
+			case 4:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=4;	
+				}
+				else if (currChar=='.')
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=5;
+				}
+				else
+				{
+					currPtr--;
+					state=8;
+				}
+				break;
+			case 8:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_NUM");
+						return tok;
+						break;
+				}
+				break;
+			case 5:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=6;
+					
+				}
+				else
+				{
+					currPtr--;
+					state=110;//error state
+				}
+				break;
+			case 6:
+				if(isD1(currChar))
+				{
+					tok->lexeme[lexPtr++]=currChar;
+					state=7;
+					
+				}
+				else
+				{
+					currPtr--;
+					state=111;//error state
+				}
+				break;
+			case 7:
+				switch(currChar)
+				{
+					default:
+						currPtr--;
+						tok->line_number=line_number;
+						strcpy(tok->token,"TK_RNUM");
+						return tok;
+						break;
+				}
 
 
 
@@ -644,6 +1070,32 @@ token_info * getNextToken(FILE *fp) {
 				}
 				
 				break;
+			case 110:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 111:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
 		}		
 	}
 }
@@ -651,6 +1103,7 @@ token_info * getNextToken(FILE *fp) {
 int main() {
 	//buf = buf1;
 	//printf("%u %u %u\n", buf, buf1,buf2);
+	initializekt();
 	FILE *fp = fopen("code.txt", "r");
 	//fp = getStream(fp);
 	//fflush(stdout);
