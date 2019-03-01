@@ -35,3 +35,7 @@ void printRule(Rule r);
 Rule createGrammarFromFile(char *filename);
 struct list wordToNode(char** symbols,char* word,int numSymbols);
 char** readFromFile(char** symbols,int *num);
+List findInList(List l, int id);
+Rule findInRule(Rule r, int id);
+
+Rule computeFirsts(Rule grammar);

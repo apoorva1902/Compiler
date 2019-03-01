@@ -5,16 +5,8 @@ int main(int argc, char **argv) {
 		printf("Please enter 2 files!\n");
 		return 0;
 	}
-	printf("reached\n");
-	//FILE *fp = fopen(argv[1], "r");
 	char line[100];
 	int i=0;
-	/*while(fscanf(fp, " %[^\n]", line), !feof(fp)) {
-		for(int j=0;j<100;j++) {
-			
-		}
-		i++;
-	}*/
 	List lh = createNode(1, 1);
 	List lh2 = createNode(2, 1);
 	List lh3 = createNode(3, 1);
@@ -26,7 +18,9 @@ int main(int argc, char **argv) {
 	addNode(lh, lh5);
 	printList(lh);
 	printf("\n");
-	Rule r = createGrammarFromFile("grammar.txt");
-	printRule(r);
+	Rule grammarRules = createGrammarFromFile("grammar.txt");
+	printRule(grammarRules);
+	Rule findv = findInRule(grammarRules, 102);
+	//rintList(findv->rhs);
 	return 0;
 }

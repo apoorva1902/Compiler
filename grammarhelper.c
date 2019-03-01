@@ -21,7 +21,8 @@ List addNode(List l, List node) {
 
 void printList(List l) {
 	List temp = l;
-	for(; temp!=NULL; printf("%d [%d] -> ", temp->id, temp->isterminal), temp=temp->next);
+	char s[100];
+	for(; temp!=NULL; printf( "%d [%d] -> ", temp->id, temp->isterminal), temp=temp->next);
 }
 
 Rule createRule(int lhs, List rhs) {
@@ -58,7 +59,6 @@ Rule createGrammarFromFile(char *filename) {
 	char line[500], word[30];
 	fscanf(fp, "%[^\n]", line);
 	while(!feof(fp)) {
-		printf("new while line=%s\n", line);
 		sscanf(line, "%s", word);
 		int lhs = wordToNode(symbols,word,num).id;
 		List rhs=NULL;
@@ -111,4 +111,34 @@ struct list wordToNode(char** symbols,char* word,int numSymbols){
 		}
 	}
 	return numNode;
+}
+
+List findInList(List l, int id) {
+	List temp=l,prev=l;
+	while(temp!=NULL) {
+		if(temp->id == id)
+			return temp;
+		temp = temp->next;
+	}
+	return NULL;
+}
+
+Rule findInRule(Rule r, int id) { 
+	Rule temp=r;
+	while(temp!=NULL) {
+		if(temp->lhs == id)
+			return temp;
+		temp=temp->next;
+	}
+	return NULL;
+}
+
+Rule computeFirsts(Rule grammar) {
+	Rule temp = grammar;
+	Rule firsts = NULL;
+	while(temp!=NULL) {
+		if(findInRule(grammar, temp->lhs)) {
+			
+		}
+	}
 }
