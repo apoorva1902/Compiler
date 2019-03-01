@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	printf("reached\n");
-	FILE *fp = fopen(argv[1], "r");
+	//FILE *fp = fopen(argv[1], "r");
 	char line[100];
 	int i=0;
 	/*while(fscanf(fp, " %[^\n]", line), !feof(fp)) {
@@ -16,10 +16,14 @@ int main(int argc, char **argv) {
 		i++;
 	}*/
 	List lh = createNode(1, 1);
-	addNode(lh, 2, 1);
-	addNode(lh, 3, 1);
-	addNode(lh, 4, 1);
-	addNode(lh, 5, 1);
+	List lh2 = createNode(2, 1);
+	List lh3 = createNode(3, 1);
+	List lh4 = createNode(4, 1);
+	List lh5 = createNode(5, 1);
+	addNode(lh, lh2);
+	addNode(lh, lh3);
+	addNode(lh, lh4);
+	addNode(lh, lh5);
 	printList(lh);
 	return 0;
 }
