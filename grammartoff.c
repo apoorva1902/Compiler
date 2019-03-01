@@ -5,7 +5,7 @@ int main(int argc, char **argv) {
 		printf("Please enter 2 files!\n");
 		return 0;
 	}
-	char line[100];
+/*	char line[100];
 	int i=0;
 	List lh = createNode(1, 1);
 	List lh2 = createNode(2, 1);
@@ -17,10 +17,13 @@ int main(int argc, char **argv) {
 	addNode(lh, lh4);
 	addNode(lh, lh5);
 	printList(lh);
-	printf("\n");
-	Rule grammarRules = createGrammarFromFile("grammar.txt");
-	printRule(grammarRules);
-	Rule findv = findInRule(grammarRules, 102);
+	printf("\n");*/
+//	Rule grammarRules = createGrammarFromFile("grammar.txt");
+//	printRule(grammarRules);
+//	Rule findv = findInRule(grammarRules, 102);
+	Element** grammar=NULL;
+	grammar=createGrammarArrayFromFile(grammar,"grammar.txt");
+	printGrammarArray(grammar);
 	//rintList(findv->rhs);
 	return 0;
 }

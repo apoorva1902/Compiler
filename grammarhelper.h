@@ -22,7 +22,18 @@ struct rule {
 
 typedef struct rule * Rule;
 
-struct rule grammar[MAX_RULES];
+//struct rule grammar[MAX_RULES];
+
+typedef struct elem{
+	int id;
+	bool isTerminal;
+	bool lastElem;
+}Element;
+
+//Element** grammar=NULL;
+
+Element** createGrammarArrayFromFile(Element** grammar,char* filename);
+void printGrammarArray(Element** grammar);
 
 List createNode(int id, bool isterminal);
 List addNode(List l, List node);
