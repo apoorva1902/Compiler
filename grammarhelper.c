@@ -145,7 +145,7 @@ Rule findInRule(Rule r, int id) {
 
 void printGrammarArray(Element** grammar){
 	int i=0;
-	for(;i<92;i++){
+	for(;i<NUMRULESGRAMMAR;i++){
 		int j=0;
 		for(;grammar[i][j].lastElem==false;j++){
 			printf("%d ",grammar[i][j].id);
@@ -213,4 +213,26 @@ Element** createGrammarArrayFromFile(Element** grammar,char* filename){
         }
 	return grammar;
 
+}
+
+bool checkElementInList(Element* list, int id){
+	int j=1;
+	for(;;j++){
+		if(list[j].id==id){
+			return true;
+		}
+		if(list[j].lastElem)
+			break;
+	}
+	return false;
+}
+
+Element** computeFirsts(Element** grammar){
+	int i;
+	Element** firstSet=NULL;
+	for(i=0;i<NUMRULESGRAMMAR;i++){
+		if(grammar[i][1].isTerminal){
+			firstSet
+		}
+	}
 }

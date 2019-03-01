@@ -5,6 +5,7 @@
 
 #define MAX_RULES 100
 #define MAXSIZE 30
+#define NUMRULESGRAMMAR 92
 
 struct list{
 	int id;
@@ -34,6 +35,8 @@ typedef struct elem{
 Element** createGrammarArrayFromFile(Element** grammar,char* filename);
 void printGrammarArray(Element** grammar);
 Element wordToNodeArray(char** symbols, char* word, int numSymbols);
+Element** computeFirsts(Element** grammar);
+
 // The array implementation ends here
 
 List createNode(int id, bool isterminal);
