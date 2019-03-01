@@ -50,6 +50,9 @@ void printRule(Rule r) {
 }
 
 Rule createGrammarFromFile(char *filename) {
+	char** symbols=NULL;
+	int num=0;
+	symbols=readFromFile(symbols,&num);
 	FILE *fp = fopen(filename, "r");
 	Rule r=NULL;
 	char line[500], word[30];
@@ -57,7 +60,7 @@ Rule createGrammarFromFile(char *filename) {
 	while(!feof(fp)) {
 		printf("new while line=%s\n", line);
 		sscanf(line, "%s", word);
-		int lhs = wordToNode(word).id;
+		int lhs = wordToNode(symbols,word,num).id;
 		List rhs=NULL;
 		int i = strlen(word) + 1, maxlimit=strlen(line);
 		while(i < maxlimit) {
@@ -66,7 +69,7 @@ Rule createGrammarFromFile(char *filename) {
 				word[j++] = line[i];
 			}
 			word[j] = '\0';
-			struct list nodeFromWord = wordToNode(word);
+			struct list nodeFromWord = wordToNode(symbols,word,num);
 			List node = createNode(nodeFromWord.id, nodeFromWord.isterminal);
 			rhs = addNode(rhs, node);
 			i++;
@@ -79,7 +82,33 @@ Rule createGrammarFromFile(char *filename) {
 	return r;
 }
 
-struct list wordToNode(char *word) {
-	List l = createNode(1, 1);
-	return *l;
+char** readFromFile(char** symbols,int *num){
+	FILE* fp=fopen("mapper.txt","r");
+	int i=0;
+	while(!feof(fp)){
+		symbols= (char **)realloc(symbols,sizeof(char*)*(i+1));
+		symbols[i]=(char*)malloc(sizeof(char)*MAXSIZE);
+		fscanf(fp,"%s\n",symbols[i]);
+		i++;
+	}
+	*num=i;
+	fclose(fp);
+	return symbols;
+}
+
+struct list wordToNode(char** symbols,char* word,int numSymbols){
+	struct list numNode;
+	int i=0;
+	for(i=0;i<numSymbols;i++){
+		if (strcmp(word,symbols[i])==0){
+			numNode.id=i+1;
+			if(word[0] =='<')
+				numNode.isterminal=false;
+			else
+				numNode.isterminal=true;
+			numNode.next=NULL;
+			return numNode;
+		}
+	}
+	return numNode;
 }

@@ -4,6 +4,7 @@
 #include<stdbool.h>
 
 #define MAX_RULES 100
+#define MAXSIZE 30
 
 struct list{
 	int id;
@@ -32,4 +33,5 @@ Rule addRule(Rule r, Rule rule);
 void printRule(Rule r);
 
 Rule createGrammarFromFile(char *filename);
-struct list wordToNode(char *word);
+struct list wordToNode(char** symbols,char* word,int numSymbols);
+char** readFromFile(char** symbols,int *num);

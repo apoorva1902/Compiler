@@ -27,5 +27,6 @@ int main(int argc, char **argv) {
 	printList(lh);
 	printf("\n");
 	Rule r = createGrammarFromFile("grammar.txt");
+	printRule(r);
 	return 0;
 }
