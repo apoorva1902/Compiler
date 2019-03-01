@@ -24,16 +24,17 @@ typedef struct rule * Rule;
 
 //struct rule grammar[MAX_RULES];
 
+// This is the array (dynamic) implementation of grammar rules
 typedef struct elem{
 	int id;
 	bool isTerminal;
 	bool lastElem;
 }Element;
 
-//Element** grammar=NULL;
-
 Element** createGrammarArrayFromFile(Element** grammar,char* filename);
 void printGrammarArray(Element** grammar);
+Element wordToNodeArray(char** symbols, char* word, int numSymbols);
+// The array implementation ends here
 
 List createNode(int id, bool isterminal);
 List addNode(List l, List node);

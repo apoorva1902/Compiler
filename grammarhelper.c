@@ -155,6 +155,23 @@ void printGrammarArray(Element** grammar){
 	}
 }
 
+Element wordToNodeArray(char** symbols,char* word,int numSymbols){
+        Element elem;
+        int i=0;
+        for(i=0;i<numSymbols;i++){
+                if (strcmp(word,symbols[i])==0){
+                        elem.id=i+1;
+                        if(word[0] =='<')
+                                elem.isTerminal=false;
+                        else
+                                elem.isTerminal=true;
+                        elem.lastElem=false;
+                        return elem;
+                }
+        }
+        return elem;
+}
+
 Element** createGrammarArrayFromFile(Element** grammar,char* filename){
 	char** symbols=NULL;
         int num=0;
@@ -168,7 +185,7 @@ Element** createGrammarArrayFromFile(Element** grammar,char* filename){
                 sscanf(line, "%s", word);
 		grammar=(Element**)realloc(grammar,sizeof(Element*)*(k+1));
 		grammar[k]=(Element*)malloc(sizeof(Element));
-		grammar[k][0].id=wordToNode(symbols,word,num).id;
+		grammar[k][0].id=wordToNodeArray(symbols,word,num).id;
 		grammar[k][0].isTerminal=false;
 		grammar[k][0].lastElem=false;
 		int wordIndex=1;
@@ -180,9 +197,9 @@ Element** createGrammarArrayFromFile(Element** grammar,char* filename){
                         }
                         word[j] = '\0';
 			grammar[k]=(Element*)realloc(grammar[k],sizeof(Element)*(wordIndex+1));
-                        struct list nodeFromWord = wordToNode(symbols,word,num);
+                        Element nodeFromWord = wordToNodeArray(symbols,word,num);
 			grammar[k][wordIndex].id=nodeFromWord.id;
-			grammar[k][wordIndex].isTerminal=nodeFromWord.isterminal;
+			grammar[k][wordIndex].isTerminal=nodeFromWord.isTerminal;
 			grammar[k][wordIndex].lastElem=false;
 			wordIndex++;
                         i++;
