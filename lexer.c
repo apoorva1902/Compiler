@@ -1112,7 +1112,7 @@ int main() {
 	while(strcmp(tok->token,"Dollar")!=0)
 	{
 		tok= getNextToken(fp);
-		printf("Next token is %s with line_number=%d\n", tok->token,tok->line_number);
+		printf("Next token is %s with line_number=%ld\n", tok->token,tok->line_number);
 	}
 	//tok = getNextToken(fp);
 	//printf("First token is %s\n", tok->token);

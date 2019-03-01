@@ -9,11 +9,17 @@ int main(int argc, char **argv) {
 	FILE *fp = fopen(argv[1], "r");
 	char line[100];
 	int i=0;
-	while(fscanf(fp, " %[^\n]", line), !feof(fp)) {
+	/*while(fscanf(fp, " %[^\n]", line), !feof(fp)) {
 		for(int j=0;j<100;j++) {
 			
 		}
 		i++;
-	}
+	}*/
+	List lh = createNode(1, 1);
+	addNode(lh, 2, 1);
+	addNode(lh, 3, 1);
+	addNode(lh, 4, 1);
+	addNode(lh, 5, 1);
+	printList(lh);
 	return 0;
 }
