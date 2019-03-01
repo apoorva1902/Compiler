@@ -3,13 +3,30 @@
 #include<string.h>
 #include<stdbool.h>
 
-struct {
+#define MAX_RULES 100
+
+struct list{
 	int id;
 	bool isterminal;
 	struct list * next;
-} list;
+};
+
 typedef struct list * List;
+
+struct rule {
+	int lhs;
+	List rhs;
+	struct rule * next;
+};
+
+typedef struct rule * Rule;
+
+struct rule grammar[MAX_RULES];
 
 List createNode(int id, bool isterminal);
 List addNode(List l, List node);
 void printList(List l);
+
+Rule createRule(int lhs, List rhs);
+Rule addRule(Rule r, Rule rule);
+void printRule(Rule r);
