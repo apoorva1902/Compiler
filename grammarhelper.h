@@ -30,3 +30,6 @@ void printList(List l);
 Rule createRule(int lhs, List rhs);
 Rule addRule(Rule r, Rule rule);
 void printRule(Rule r);
+
+Rule createGrammarFromFile(char *filename);
+struct list wordToNode(char *word);

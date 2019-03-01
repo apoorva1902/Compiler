@@ -25,5 +25,7 @@ int main(int argc, char **argv) {
 	addNode(lh, lh4);
 	addNode(lh, lh5);
 	printList(lh);
+	printf("\n");
+	Rule r = createGrammarFromFile("grammar.txt");
 	return 0;
 }
