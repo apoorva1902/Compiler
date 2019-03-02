@@ -1,0 +1,15 @@
+git pull orignnishchay master //for downloading updated files
+
+
+git add lexer.c lexer.h...
+git commit -m "msg"
+
+git push -u origin master  //for pushing to apoorva1902(first pull from nischchay)
+
+//for  pushing to nishchay 
+//go to own repo
+//pull request
+// then confirm on next page
+
+//////dont do---
+git remote add orginnishchay ""
