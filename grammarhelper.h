@@ -39,4 +39,4 @@ List findInList(List l, int id);
 Rule findInRule(Rule r, int id);
 
 Rule computeFirsts(Rule grammar);
-List localFirst(Rule parentProduction, Rule firsts);
+List localFirst(Rule grammar, Rule parentProduction, Rule firsts);

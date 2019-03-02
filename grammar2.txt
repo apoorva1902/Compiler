@@ -5,4 +5,4 @@
 <T_> star <F> <T_>
 <T_> eps
 <F> brop <E> brcl
-<F> id
+<F> <T>
