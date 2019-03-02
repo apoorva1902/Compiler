@@ -25,20 +25,6 @@ typedef struct rule * Rule;
 
 //struct rule grammar[MAX_RULES];
 
-// This is the array (dynamic) implementation of grammar rules
-typedef struct elem{
-	int id;
-	bool isTerminal;
-	bool lastElem;
-}Element;
-
-Element** createGrammarArrayFromFile(Element** grammar,char* filename);
-void printGrammarArray(Element** grammar);
-Element wordToNodeArray(char** symbols, char* word, int numSymbols);
-Element** computeFirsts(Element** grammar);
-
-// The array implementation ends here
-
 List createNode(int id, bool isterminal);
 List addNode(List l, List node);
 void printList(List l);
@@ -54,3 +40,6 @@ List findInList(List l, int id);
 Rule findInRule(Rule r, int id);
 
 Rule computeFirsts(Rule grammar);
+
+Rule computeSingleFollow(Rule grammar, int id);
+Rule computeFollow(Rule grammar);

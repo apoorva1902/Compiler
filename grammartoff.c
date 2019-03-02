@@ -18,12 +18,8 @@ int main(int argc, char **argv) {
 	addNode(lh, lh5);
 	printList(lh);
 	printf("\n");*/
-//	Rule grammarRules = createGrammarFromFile("grammar.txt");
-//	printRule(grammarRules);
-//	Rule findv = findInRule(grammarRules, 102);
-	Element** grammar=NULL;
-	grammar=createGrammarArrayFromFile(grammar,"grammar.txt");
-	printGrammarArray(grammar);
-	//rintList(findv->rhs);
+	Rule grammarRules = createGrammarFromFile("grammar.txt");
+	printRule(grammarRules);
+	Rule findv = findInRule(grammarRules, 102);
 	return 0;
 }

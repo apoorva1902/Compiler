@@ -133,7 +133,7 @@ Rule findInRule(Rule r, int id) {
 	return NULL;
 }
 
-/*Rule computeFirsts(Rule grammar) {
+Rule computeFirsts(Rule grammar) {
 	Rule temp = grammar;
 	Rule firsts = NULL;
 	while(temp!=NULL) {
@@ -141,98 +141,12 @@ Rule findInRule(Rule r, int id) {
 			
 		}
 	}
-}*/
-
-void printGrammarArray(Element** grammar){
-	int i=0;
-	for(;i<NUMRULESGRAMMAR;i++){
-		int j=0;
-		for(;grammar[i][j].lastElem==false;j++){
-			printf("%d ",grammar[i][j].id);
-		}
-		printf("%d",grammar[i][j].id);
-		printf("\n");
-	}
 }
 
-Element wordToNodeArray(char** symbols,char* word,int numSymbols){
-        Element elem;
-        int i=0;
-        for(i=0;i<numSymbols;i++){
-                if (strcmp(word,symbols[i])==0){
-                        elem.id=i+1;
-                        if(word[0] =='<')
-                                elem.isTerminal=false;
-                        else
-                                elem.isTerminal=true;
-                        elem.lastElem=false;
-                        return elem;
-                }
-        }
-        return elem;
+Rule computeSingleFollow(Rule grammar, int id){
+	
 }
 
-Element** createGrammarArrayFromFile(Element** grammar,char* filename){
-	char** symbols=NULL;
-        int num=0;
-        symbols=readFromFile(symbols,&num);
-        FILE *fp = fopen(filename, "r");
-        Rule r=NULL;
-        char line[500], word[MAXSIZE];
-        fscanf(fp, "%[^\n]", line);
-	int k=0;
-        while(!feof(fp)) {
-                sscanf(line, "%s", word);
-		grammar=(Element**)realloc(grammar,sizeof(Element*)*(k+1));
-		grammar[k]=(Element*)malloc(sizeof(Element));
-		grammar[k][0].id=wordToNodeArray(symbols,word,num).id;
-		grammar[k][0].isTerminal=false;
-		grammar[k][0].lastElem=false;
-		int wordIndex=1;
-                int i = strlen(word) + 1, maxlimit=strlen(line);
-                while(i < maxlimit) {
-                        int j;
-                        for(j=0; line[i]!=' ' && i<strlen(line); i++) {
-                                word[j++] = line[i];
-                        }
-                        word[j] = '\0';
-			grammar[k]=(Element*)realloc(grammar[k],sizeof(Element)*(wordIndex+1));
-                        Element nodeFromWord = wordToNodeArray(symbols,word,num);
-			grammar[k][wordIndex].id=nodeFromWord.id;
-			grammar[k][wordIndex].isTerminal=nodeFromWord.isTerminal;
-			grammar[k][wordIndex].lastElem=false;
-			wordIndex++;
-                        i++;
-                }
-		grammar[k][wordIndex-1].lastElem=true;
-		k++;
-               // Rule rule = createRule(lhs, rhs);
-               // r = addRule(r, rule);
-                fseek(fp, 1, SEEK_CUR);
-                fscanf(fp, "%[^\n]", line);
-        }
-	return grammar;
-
-}
-
-bool checkElementInList(Element* list, int id){
-	int j=1;
-	for(;;j++){
-		if(list[j].id==id){
-			return true;
-		}
-		if(list[j].lastElem)
-			break;
-	}
-	return false;
-}
-
-Element** computeFirsts(Element** grammar){
-	int i;
-	Element** firstSet=NULL;
-	for(i=0;i<NUMRULESGRAMMAR;i++){
-		if(grammar[i][1].isTerminal){
-			firstSet
-		}
-	}
+Rule computeFollow(Rule grammar){
+	
 }
