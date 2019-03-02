@@ -32,10 +32,11 @@ Rule createRule(int lhs, List rhs);
 Rule addRule(Rule r, Rule rule);
 void printRule(Rule r);
 
-Rule createGrammarFromFile(char *filename);
+Rule createGrammarFromFile(char *filename, char *mappername);
 struct list wordToNode(char** symbols,char* word,int numSymbols);
-char** readFromFile(char** symbols,int *num);
+char** readFromFile(char** symbols,int *num, char *mappername);
 List findInList(List l, int id);
 Rule findInRule(Rule r, int id);
 
 Rule computeFirsts(Rule grammar);
+List localFirst(Rule parentProduction, Rule firsts);
