@@ -34,7 +34,7 @@
 <stmt> <iterativeStmt>
 <stmt> <conditionalStmt>
 <stmt> <ioStmt>
-<assignmentStmt> <SingleOrRecId> TK_ASSIGNOP <arithmeticExpression> TK_SEM
+<assignmentStmt> <singleOrRecId> TK_ASSIGNOP <arithmeticExpression> TK_SEM
 <singleOrRecId> TK_ID <new_24>
 <new_24> TK_DOT TK_FIELDID
 <new_24> eps 

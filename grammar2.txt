@@ -5,4 +5,8 @@
 <T_> star <F> <T_>
 <T_> eps
 <F> brop <E> brcl
+<<<<<<< HEAD
 <F> id
+=======
+<F> <T>
+>>>>>>> ae35fb7f026d2e6d5ca55a833e3909a93cbe58db
