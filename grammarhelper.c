@@ -137,6 +137,8 @@ Rule computeFirsts(Rule grammar) {
 	Rule temp = grammar;
 	Rule firsts = NULL;
 	while(temp!=NULL) {
+		//if(temp->lhs == 102)
+		//	return firsts;
 		Rule inFirsts = findInRule(firsts, temp->lhs);
 		if(!inFirsts) {
 			List fst = NULL;
@@ -144,13 +146,21 @@ Rule computeFirsts(Rule grammar) {
 			Rule newrule = createRule(temp->lhs, fst);
 			firsts = addRule(firsts, newrule);
 		}
+		printRule(firsts);
 		temp=temp->next;
 	}
 	return firsts;
 }
 
+List findFirstForList(Rule grammar, List l) {
+	Rule rule = createRule(-1, l);
+	List newlist = NULL;
+	Rule firsts = NULL;
+	newlist = localFirst(grammar, rule, firsts);
+	return newlist;
+}
+
 List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
-	printf("Finding first of: %d\n", parentProduction->lhs);
 	Rule retval = findInRule(firsts, parentProduction->lhs);
 	if(retval) {
 		return retval->rhs;
