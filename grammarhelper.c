@@ -352,14 +352,21 @@ Rule computeSingleFollow(Rule grammar, Rule firstSet, Rule followSet, int id){
 	return NULL;
 }
 
-Rule computeFollow(Rule grammar,Rule firsts,Rule follows){
-	Rule temp=follows;
+Rule computeFollow(Rule grammar,Rule firsts){
+	Rule followSet=NULL;
+	for(int i=NONTERMINALLOW;i<=NONTERMINALHI;i++){
+		Rule tempfollowSet=(Rule)malloc(sizeof(struct rule));
+		tempfollowSet->lhs=i;
+		tempfollowSet->rhs=NULL;
+		followSet=addRule(followSet,tempfollowSet);
+	}
+	Rule temp=followSet;
 	int i=NONTERMINALLOW;
 	while(temp!=NULL){
-		Rule singleFollow=computeSingleFollow(grammar,firsts,follows,i);
+		Rule singleFollow=computeSingleFollow(grammar,firsts,followSet,i);
 		temp->rhs=singleFollow->rhs;
 		temp=temp->next;
 		i++;
 	}
-	return follows;
+	return followSet;
 }

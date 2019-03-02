@@ -51,4 +51,4 @@ Rule computeFirsts(Rule grammar);
 List localFirst(Rule grammar, Rule parentProduction, Rule firsts);
 
 Rule computeSingleFollow(Rule grammar,Rule firstSet, Rule followSet, int id);
-Rule computeFollow(Rule grammar,Rule firsts, Rule follows);
+Rule computeFollow(Rule grammar,Rule firsts);

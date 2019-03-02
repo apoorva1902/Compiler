@@ -14,18 +14,11 @@ int main(int argc, char **argv) {
 	printf("Firsts:\n");
 	printRule(firsts);
 	printf("\n");
-	Rule followSet=NULL;
-	for(int i=NONTERMINALLOW;i<=NONTERMINALHI;i++){
-		Rule tempfollowSet=(Rule)malloc(sizeof(struct rule));
-		tempfollowSet->lhs=i;
-		tempfollowSet->rhs=NULL;
-		followSet=addRule(followSet,tempfollowSet);
-	}
 	// printf("RHS rule: \n");
 	// Rule temp =findInRuleRhs(grammar,57);
 	// printRule(temp);
 	printf("My follow: \n");
-	followSet=computeFollow(grammarRules,firsts,followSet);
+	Rule followSet=computeFollow(grammarRules,firsts);
 	printRule(followSet);
 	return 0;
 }
