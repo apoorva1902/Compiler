@@ -140,7 +140,7 @@ Rule computeFirsts(Rule grammar) {
 		Rule inFirsts = findInRule(firsts, temp->lhs);
 		if(!inFirsts) {
 			List fst = NULL;
-			fst = localFirst(temp, firsts);
+			fst = localFirst(grammar, temp, firsts);
 			Rule newrule = createRule(temp->lhs, fst);
 			firsts = addRule(firsts, newrule);
 		}
@@ -149,8 +149,8 @@ Rule computeFirsts(Rule grammar) {
 	return firsts;
 }
 
-List localFirst(Rule parentProduction, Rule firsts) {
-	//printf("Finding first of: %d\n", parentProduction->lhs);
+List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
+	printf("Finding first of: %d\n", parentProduction->lhs);
 	Rule retval = findInRule(firsts, parentProduction->lhs);
 	if(retval) {
 		return retval->rhs;
@@ -166,9 +166,9 @@ List localFirst(Rule parentProduction, Rule firsts) {
 				break;
 			}
 			else {								// non terminal encountered
-				Rule nonterm = findInRule(production, temp->id);
+				Rule nonterm = findInRule(grammar, temp->id);
 				List aheadList = NULL;
-				aheadList = localFirst(nonterm, firsts);
+				aheadList = localFirst(grammar, nonterm, firsts);
 				if(!findInRule(firsts, nonterm->lhs)) {
 					Rule newrule = createRule(nonterm->lhs, aheadList);
 					firsts = addRule(firsts, newrule);
