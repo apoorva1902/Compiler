@@ -146,7 +146,6 @@ Rule computeFirsts(Rule grammar) {
 			Rule newrule = createRule(temp->lhs, fst);
 			firsts = addRule(firsts, newrule);
 		}
-		printRule(firsts);
 		temp=temp->next;
 	}
 	return firsts;
