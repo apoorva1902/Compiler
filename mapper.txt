@@ -50,7 +50,7 @@ TK_LT
 TK_LE
 TK_EQ
 TK_GT
-TK_LE
+TK_GE
 TK_NE
 $
 <program>

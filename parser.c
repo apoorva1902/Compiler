@@ -1,5 +1,6 @@
 #include "hardcode.h"
 #include "parser.h"
+
 int main() {
 	printf("Firsts are:\n");
 	Rule first = createFirsts();
@@ -23,7 +24,7 @@ void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTe
 		{
 			int left=R->lhs;
 			List right=R->rhs;
-			List firstRight=firstList(right);
+			List firstRight=findFirstForList(grammar,right);
 
 			int flageps=0;
 			while(firstRight!=NULL)
@@ -42,7 +43,7 @@ void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTe
 			if(flageps==1)
 			{
 				flageps=0;
-				List followleft=followid(left);
+				List followleft=findInRule(follow,left)//followid(left);
 				while(followid!=NULL)
 				{
 					int id=followleft->id;
@@ -86,4 +87,24 @@ void printParseTable(Rule Table[nTerms][nTerms])
 		}
 		printf("\n");
 	}
+}
+
+
+
+Treenode createLeafnode(int id) {
+	Leafnode node = (Leafnode) malloc (sizeof(struct leafnode));
+	node->id = id;
+	Treenode tnode;
+	tnode->leaf = node;
+	return tnode;
+}
+
+
+Treenode createNonleafnode(int id, Treenode children) {	
+	Nonleafnode node = (Nonleafnode) malloc (sizeof(struct nonleafnode));
+	node->id = id;
+	node->children = children;
+	Treenode tnode;
+	tnode->nonleaf = node;
+	return tnode;
 }

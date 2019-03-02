@@ -38,5 +38,6 @@ char** readFromFile(char** symbols,int *num, char *mappername);
 List findInList(List l, int id);
 Rule findInRule(Rule r, int id);
 
+List findFirstForList(Rule grammar, List l);
 Rule computeFirsts(Rule grammar);
 List localFirst(Rule grammar, Rule parentProduction, Rule firsts);
