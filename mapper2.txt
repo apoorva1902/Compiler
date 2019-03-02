@@ -4,6 +4,7 @@ star
 brop
 brcl
 id
+$
 <E>
 <E_>
 <T>
