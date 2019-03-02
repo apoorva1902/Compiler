@@ -137,8 +137,63 @@ Rule computeFirsts(Rule grammar) {
 	Rule temp = grammar;
 	Rule firsts = NULL;
 	while(temp!=NULL) {
-		if(findInRule(grammar, temp->lhs)) {
-			
+		Rule inFirsts = findInRule(firsts, temp->lhs);
+		if(!inFirsts) {
+			List fst = NULL;
+			fst = localFirst(temp, fsti, firsts);
+			Rule newrule = createRule(temp->lhs, fst);
+			firsts = addRule(firsts, newrule);
 		}
+		temp=temp->next;
 	}
+}
+
+List localFirst(Rule parentProduction, List fst, Rule firsts) {
+	Rule retval = findInRule(firsts, parentProduction->lhs);
+	if(retval) {
+		return retval->rhs;
+	}
+	List l = NULL;
+	Rule production = parentProduction;
+	while(production->lhs == parentProduction->lhs) {
+		List temp = production->rhs;
+		while(temp!=NULL) {
+			if(temp->isterminal) {
+				List node = createNode(temp->id, temp->isterminal);
+				l = addNode(l, node);
+				break;
+			}
+			else {								// non terminal encountered
+				Rule nonterm = findInRule(production, temp->id);
+				List aheadList = NULL;
+				aheadList = localFirst(nonterm, aheadList);
+				if(findInRule(firsts, nonterm->lhs)) {
+					Rule newrule = createRule(nonterm->lhs, aheadList);
+					firsts = addRule(firsts, newrule);
+				}
+				if(findInList(aheadList, 1)) {				// if eps in encountered non terminal
+					if(temp->next == NULL) {			// if it was the last non terminal (eps should be added in firsts list)
+						l = addNode(l, aheadList);
+						break;
+					}
+					else {						// if not the last, (no need to add eps)
+						List newtemp;
+						for(newtemp = aheadList; newtemp!=NULL; newtemp = newtemp->next) {
+							if(newtemp->id != 1) {
+								List newnode = createNode(newtemp->id, newtemp->isterminal);
+								l = addNode(l, newnode);
+							}
+						}
+						temp = temp->next;
+					}
+				}
+				else {
+					l = addNode(l, aheadList);
+					break;
+				}
+			}
+		}
+		production = production->next;
+	}
+	return l;
 }
