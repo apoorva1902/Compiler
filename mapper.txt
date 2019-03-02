@@ -50,7 +50,6 @@ TK_LT
 TK_LE
 TK_EQ
 TK_GT
-TK_GE
 TK_LE
 TK_NE
 $

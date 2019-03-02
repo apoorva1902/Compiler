@@ -1,0 +1,8 @@
+<E> <T> <E_>
+<E_> plus <T> <E_>
+<E_> eps
+<T> <F> <T_>
+<T_> star <F> <T_>
+<T_> eps
+<F> brop <E> brcl
+<F> id

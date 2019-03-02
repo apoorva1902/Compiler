@@ -1,0 +1,11 @@
+eps
+plus
+star
+brop
+brcl
+id
+<E>
+<E_>
+<T>
+<T_>
+<F>
