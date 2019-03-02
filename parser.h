@@ -8,8 +8,8 @@ int nTerms=51;
 
 void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTerms] );
 void printParseTable(Rule Table[nTerms][nTerms]);
-List findFirstForList(List);
-List followid(int);
+//List findFirstForList(Rule,List);
+//List followid(int);
 
 union treenode;
 typedef union treenode * Treenode;

@@ -7,25 +7,31 @@ int main() {
 	printRule(first);
 	printf("Follow are:\n");
 	Rule follow = createFollow();
+
 	printRule(follow);
+	
 	Rule Table[nTerms][Terms];
 	Rule *null=NULL;
 	memset(Table,NULL,nTerms*Terms*sizeof(Rule));
-	Rule grammar=createGrammarFromFile("grammar2.txt","mapper2.text");
+	Rule grammar=createGrammarFromFile("grammar2.txt","mapper2.txt");
+	printf("grammar\n" );
 	printRule(grammar);
+	
 	createParseTable(grammar,first,follow,Table);
+	printf("parse Table\n");
 	printParseTable(Table);
 	return 0;
 }
 void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTerms] )
-{		
-		Rule R=grammar;
+{		Rule R=grammar;
 		while(R!=NULL)
 		{
+			printf("Inside 1st while\n");
 			int left=R->lhs;
 			List right=R->rhs;
 			List firstRight=findFirstForList(grammar,right);
-
+			printf("firstRight\n");
+			printList(firstRight);
 			int flageps=0;
 			while(firstRight!=NULL)
 			{
@@ -33,6 +39,8 @@ void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTe
 				if(id!=1)
 				{
 					Table[left-(Terms+1)][id-1]=R;
+					printf("\nTable value\n");
+					printList(Table[left-(Terms+1)][id-1]->rhs);
 				}
 				else
 				{
@@ -43,13 +51,17 @@ void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTe
 			if(flageps==1)
 			{
 				flageps=0;
-				List followleft=findInRule(follow,left)//followid(left);
-				while(followid!=NULL)
+				List followleft=findInRule(follow,left)->rhs;//followid(left);
+				printf("followleft\n");
+				printList(followleft);
+				while(followleft!=NULL)
 				{
 					int id=followleft->id;
 					if(id!=1)
 					{	
 						Table[left-(Terms+1)][id-1]=R;
+						printf("Table value 2\n");
+						printRule(Table[left-(Terms+1)][id-1]);
 					}
 					else
 					{
@@ -64,10 +76,7 @@ void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTe
 
 
 			}
-			else
-			{
-				break;
-			}
+			
 			R=R->next;
 			
 		}
@@ -80,7 +89,7 @@ void printParseTable(Rule Table[nTerms][nTerms])
 	for (int i = 0; i < nTerms; ++i)
 	{
 		/* code */
-		for (int j = 0; j < Terms; ++i)
+		for (int j = 0; j < Terms; ++j)
 		{
 			/* code */
 			printRule(Table[i][j]);
