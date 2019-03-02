@@ -19,6 +19,36 @@ List addNode(List l, List node) {
 	return l;
 }
 
+List deleteNode(List l, List node){
+	if (l==NULL){
+		return l;
+	}else{
+		if(l->next==NULL && l->id == node->id){
+			return NULL;
+		}else{
+			List temp=l;
+			List curr=NULL;
+			if(temp->id==node->id){
+				curr=temp;
+				l=temp->next;
+				free(curr);
+			}else{
+				while(temp->next!=NULL && temp->next->id !=node->id){
+					temp=temp->next;
+				}
+				curr=temp->next;
+				if(curr!=NULL && curr->id==node->id){
+					temp->next=curr->next;
+					free(curr);
+				}else if(curr==NULL){
+					return l;
+				}
+			}
+		}
+	}
+	return l;
+}
+
 void printList(List l) {
 	List temp = l;
 	char s[100];
@@ -146,7 +176,6 @@ Rule computeFirsts(Rule grammar) {
 			Rule newrule = createRule(temp->lhs, fst);
 			firsts = addRule(firsts, newrule);
 		}
-		printRule(firsts);
 		temp=temp->next;
 	}
 	return firsts;
@@ -210,52 +239,127 @@ List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
 	return l;
 }
 
-List localFirst(Rule parentProduction, List fst, Rule firsts) {
-	Rule retval = findInRule(firsts, parentProduction->lhs);
-	if(retval) {
-		return retval->rhs;
-	}
-	List l = NULL;
-	Rule production = parentProduction;
-	while(production->lhs == parentProduction->lhs) {
-		List temp = production->rhs;
-		while(temp!=NULL) {
-			if(temp->isterminal) {
-				List node = createNode(temp->id, temp->isterminal);
-				l = addNode(l, node);
-				break;
+Rule findInRuleRhs(Rule r, int id){
+	Rule temp =r;
+	while(temp!=NULL){
+		List rhs=temp->rhs;
+		while(rhs!=NULL){
+			if(rhs->id==id){
+				return temp;
 			}
-			else {								// non terminal encountered
-				Rule nonterm = findInRule(production, temp->id);
-				List aheadList = NULL;
-				aheadList = localFirst(nonterm, aheadList);
-				if(findInRule(firsts, nonterm->lhs)) {
-					Rule newrule = createRule(nonterm->lhs, aheadList);
-					firsts = addRule(firsts, newrule);
-				}
-				if(findInList(aheadList, 1)) {				// if eps in encountered non terminal
-					if(temp->next == NULL) {			// if it was the last non terminal (eps should be added in firsts list)
-						l = addNode(l, aheadList);
-						break;
-					}
-					else {						// if not the last, (no need to add eps)
-						List newtemp;
-						for(newtemp = aheadList; newtemp!=NULL; newtemp = newtemp->next) {
-							if(newtemp->id != 1) {
-								List newnode = createNode(newtemp->id, newtemp->isterminal);
-								l = addNode(l, newnode);
+			rhs=rhs->next;
+		}
+		temp=temp->next;
+	}
+	return NULL;
+}
+
+
+Rule computeSingleFollow(Rule grammar, Rule firstSet, Rule followSet, int id){
+	Rule checkFollowExists=findInRule(followSet,id);
+	if(checkFollowExists->rhs!=NULL && checkFollowExists->rhs->id != DUMMYNODEID ){
+		return checkFollowExists;
+	}else if(checkFollowExists->rhs!=NULL && checkFollowExists->rhs->id == DUMMYNODEID){
+		checkFollowExists->rhs=deleteNode(checkFollowExists->rhs,createNode(DUMMYNODEID,true));
+		return createRule(id,NULL);
+	}
+	else{
+		Rule temp =grammar;
+		Rule currTemp=grammar;
+		Rule follow=(Rule)malloc(sizeof(struct rule));
+		follow->lhs=id;
+		if (id ==STARTSYMBOL){
+			follow->rhs=addNode(follow->rhs,createNode(DOLLAR,true));
+		}else{
+			follow->rhs=NULL;
+		}
+		checkFollowExists->rhs=addNode(checkFollowExists->rhs,createNode(DUMMYNODEID,true));
+		follow->next=NULL;
+		int x=0;
+		currTemp=findInRuleRhs(currTemp,id);
+		while(currTemp!=NULL){
+			List rhs=currTemp->rhs;
+			while(rhs!=NULL){
+				if(rhs->id==id){
+					if(rhs->next!=NULL){
+						List potentialFollow=rhs->next;
+						while(potentialFollow!=NULL){
+							Rule firstOfNextNode=findInRule(firstSet,potentialFollow->id);
+							if(firstOfNextNode !=NULL){
+								List tempFollow=firstOfNextNode->rhs;
+								while(tempFollow !=NULL){
+									if(findInList(follow->rhs,tempFollow->id)==NULL && tempFollow->id != EPS){
+										follow->rhs=addNode(follow->rhs,createNode(tempFollow->id,tempFollow->isterminal));
+									}
+									tempFollow=tempFollow->next;
+								}
+								potentialFollow=potentialFollow->next;
+							}else{// case when it is a terminal
+								if(potentialFollow->id == EPS){
+							// printf("EPS found\n");
+								List tempFollow=computeSingleFollow(grammar,firstSet,followSet,currTemp->lhs)->rhs;
+									while(tempFollow !=NULL){
+										// printf("Third while\n");
+										if(findInList(follow->rhs,tempFollow->id)==NULL && tempFollow->id != EPS){
+											follow->rhs=addNode(follow->rhs,createNode(tempFollow->id,tempFollow->isterminal));
+										}
+										tempFollow=tempFollow->next;
+									}
+								}else{
+									// printf("Adding terminal into follow : %d\n",potentialFollow->id);
+									if(findInList(follow->rhs,potentialFollow->id)==NULL)
+										follow->rhs=addNode(follow->rhs,createNode(potentialFollow->id,true));
+									// printRule(follow);
+								}
+								break;
 							}
 						}
-						temp = temp->next;
+						if(potentialFollow==NULL){
+							List tempFollow=computeSingleFollow(grammar,firstSet,followSet,currTemp->lhs)->rhs;
+							while(tempFollow !=NULL){
+								// printf("Sixth while\n");
+								if(findInList(follow->rhs,tempFollow->id)==NULL && tempFollow->id != EPS){
+									follow->rhs=addNode(follow->rhs,createNode(tempFollow->id,tempFollow->isterminal));
+								}
+								tempFollow=tempFollow->next;
+							}
+							break;
+						}
+					}else{
+						if (currTemp->lhs == id){
+							break;
+						}
+						List tempFollow=computeSingleFollow(grammar,firstSet,followSet,currTemp->lhs)->rhs;
+						while(tempFollow !=NULL){
+							if(findInList(follow->rhs,tempFollow->id)==NULL && tempFollow->id != EPS){
+								List node=(List)malloc(sizeof(struct list));
+								node->id=tempFollow->id;
+								node->isterminal=tempFollow->isterminal;
+								node->next=NULL;
+								follow->rhs=addNode(follow->rhs,node);
+							}
+							tempFollow=tempFollow->next;
+						}
 					}
 				}
-				else {
-					l = addNode(l, aheadList);
-					break;
-				}
+				rhs=rhs->next;
 			}
+			currTemp=currTemp->next;
 		}
-		production = production->next;
+		checkFollowExists->rhs=deleteNode(checkFollowExists->rhs,createNode(DUMMYNODEID,true));
+		return follow;
 	}
-	return l;
+	return NULL;
+}
+
+Rule computeFollow(Rule grammar,Rule firsts,Rule follows){
+	Rule temp=follows;
+	int i=NONTERMINALLOW;
+	while(temp!=NULL){
+		Rule singleFollow=computeSingleFollow(grammar,firsts,follows,i);
+		temp->rhs=singleFollow->rhs;
+		temp=temp->next;
+		i++;
+	}
+	return follows;
 }
