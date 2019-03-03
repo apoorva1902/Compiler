@@ -26,7 +26,7 @@ void add_keyword_table(char key[TOKEN_SIZE],char value[TOKEN_SIZE])
 {
 	//printf("%s\n",key );
 	int index=hash(key);
-	printf("%d\n",index );
+	//printf("%d\n",index );
 	if(strcmp(keyword_table[index].key,"-1")!=0)
 	{
 		int j=index+1;
@@ -156,22 +156,31 @@ FILE *getStream(FILE *fp) {
 	
 	if(buf == buf1)
 	{
-		int char_read = fread(buf2, sizeof(char), sizeof(buf2), fp);
-		if(feof(fp))
-	    {
-			buf2[char_read] = '$';
+		if(flag_backtrack_to_prev_buff==0)
+		{
+			memset(buf2,'\0',sizeof(buf2)*sizeof(char));
+			int char_read = fread(buf2, sizeof(char), sizeof(buf2)-1, fp);
+			if(feof(fp))
+	    	{
+				buf2[char_read] = '$';
+			}
+			printf("Buffer 2:\n%s\n",buf2);
 		}
-		printf("1:%s\n",buf2);
+		else
+		{
+			flag_backtrack_to_prev_buff=0;
+		}	
 		buf = buf2;
 	}
 	else 
 	{
-		int char_read = fread(buf1, sizeof(char), sizeof(buf1), fp);
+		memset(buf1,'\0',sizeof(buf1)*sizeof(char));
+		int char_read = fread(buf1, sizeof(char), sizeof(buf1)-1, fp);
 		if(feof(fp))
 	    {
 		 	buf1[char_read] = '$';
 		}
-		printf("2:%s\n",buf1);
+		printf("Buffer 1:\n%s\n",buf1);
 		
 		buf = buf1;
 	}
@@ -186,11 +195,17 @@ token_info * getNextToken(FILE *fp) {
 	memset(tok->lexeme, '\0', sizeof(tok->lexeme));
 	int state=1, lexPtr=0;
 	char currChar;
+	
 	//printf("%u %u %u\n", buf, buf1,buf2);
 	
 	for(int i=0;i<600;i++) {
 		
-	
+
+		if(currPtr<0)
+		{
+			flag_backtrack_to_prev_buff=1;
+			currPtr=BUFFER_SIZE-1+currPtr;
+		}
 		if(currPtr==BUFFER_SIZE-1)//511=BufferSize-1
 		{	
 			//printf("Inside currPtr=511 \n");
@@ -204,6 +219,8 @@ token_info * getNextToken(FILE *fp) {
 		}*/
 		//printf("%u %u %u %i %c\n", buf, buf1,buf2,i,currChar);
 		
+
+
 		/*vip In each iteration(in each separate case statement) either do 
 		* currPtr--(backtracking this character(not using))
 		* or
@@ -400,7 +417,7 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;//so that in next iteration it goes to state 1 and case '$'
 						//fall through
 					case '\n':
-						
+						tok->lexeme[lexPtr++]='%';							
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_COMMENT");
 						if(currChar=='\n')
@@ -411,7 +428,8 @@ token_info * getNextToken(FILE *fp) {
 
 					default:
 						state=42;
-						tok->lexeme[lexPtr++]=currChar;
+						//tok->lexeme[lexPtr++]=currChar;
+						//dont return comment just %
 						break;
 				}
 				break;
@@ -1122,7 +1140,7 @@ token_info * getNextToken(FILE *fp) {
 				{
 					default:
 						currPtr--;//backtract this character
-						strcpy(tok->token,"TK_ERROR");
+						strcpy(tok->token,"TK_ERROR");//have to print Unknown symbol from state 1 
 						tok->line_number=line_number;
 						
 						return tok;
@@ -1134,11 +1152,15 @@ token_info * getNextToken(FILE *fp) {
 	}
 }
 
-/*int main() {
+int main() {
 	//buf = buf1;
 	//printf("%u %u %u\n", buf, buf1,buf2);
 	initializekt();
-	FILE *fp = fopen("code.txt", "r");
+	currPtr=511;//Buffersize-1
+	line_number=1;
+	buf=buf2;
+	flag_backtrack_to_prev_buff=0;
+	FILE *fp = fopen("testcases/testcase4.txt", "r");
 	//fp = getStream(fp);
 	//fflush(stdout);
 	//currPtr=511;
@@ -1146,11 +1168,11 @@ token_info * getNextToken(FILE *fp) {
 	while(strcmp(tok->token,"Dollar")!=0)
 	{
 		tok= getNextToken(fp);
-		printf("Next token is %s with line_number=%ld\n", tok->token,tok->line_number);
+		printf("Next token is %s | line_number=%ld | lexeme=%s\n", tok->token,tok->line_number,tok->lexeme);
 	}
 	//tok = getNextToken(fp);
 	//printf("First token is %s\n", tok->token);
 	
 	return 0;
 
-}*/
+}

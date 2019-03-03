@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #define MAX_SIZE 50
-#define TOKEN_SIZE 15
+#define TOKEN_SIZE 30
 #define BUFFER_SIZE 512
 
 typedef struct {
@@ -17,5 +17,7 @@ char buf2[BUFFER_SIZE];
 int currPtr;
 int line_number;
 char *buf;
+int flag_backtrack_to_prev_buff;
 FILE *getStream(FILE *fp);
 token_info * getNextToken(FILE *fp);
+void initializekt();

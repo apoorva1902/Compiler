@@ -4,6 +4,7 @@ int main(int argc, char **argv) {
 	currPtr=511;
 	line_number=1;
 	buf=buf2;
+	initializekt();
 	Rule grammar=createGrammarFromFile(argv[1],argv[2]);
 	Rule firsts = computeFirsts(grammar);
 	Rule follow = newFollow(grammar, firsts);
