@@ -14,8 +14,8 @@ typedef struct {
 
 char buf1[BUFFER_SIZE];
 char buf2[BUFFER_SIZE];
-int currPtr=511;
-int line_number=1;
-char *buf=buf2;
+int currPtr;
+int line_number;
+char *buf;
 FILE *getStream(FILE *fp);
 token_info * getNextToken(FILE *fp);
