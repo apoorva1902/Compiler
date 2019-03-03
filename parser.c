@@ -1,104 +1,94 @@
 #include "hardcode.h"
 #include "parser.h"
 
-int main() {
-	printf("Firsts are:\n");
-	Rule first = createFirsts();
-	printRule(first);
-	printf("Follow are:\n");
-	Rule follow = createFollow();
-
-	printRule(follow);
-	
-	Rule Table[nTerms][Terms];
-	Rule *null=NULL;
-	memset(Table,NULL,nTerms*Terms*sizeof(Rule));
-	Rule grammar=createGrammarFromFile("grammar2.txt","mapper2.txt");
-	printf("grammar\n" );
-	printRule(grammar);
-	
-	createParseTable(grammar,first,follow,Table);
-	printf("parse Table\n");
-	printParseTable(Table);
+int main(int argc, char **argv) {
+	Rule grammar=createGrammarFromFile(argv[1],argv[2]);
+	// printRule(grammar);
+	// printList(findFirstForList(grammar, findInRule(grammar, 8)->rhs));
+	// p();p();p();
+	Rule firsts = computeFirsts(grammar);
+	// printRule(firsts);
+	// p();p();p();
+	Rule follow = newFollow(grammar, firsts);
+	// printRule(follow);
+	// p();p();p();
+	Rule ** parsetable = createEmptyParseTable(NUMBEROFNONTERMS, NUMBEROFTERMS);
+	parsetable = populateParseTable(grammar, follow, parsetable);
+	// p();p();p();
+	printParseTable(parsetable);
 	return 0;
 }
-void createParseTable(Rule grammar,Rule first,Rule follow,Rule Table[nTerms][nTerms] )
-{		Rule R=grammar;
-		while(R!=NULL)
-		{
-			printf("Inside 1st while\n");
-			int left=R->lhs;
-			List right=R->rhs;
-			List firstRight=findFirstForList(grammar,right);
-			printf("firstRight\n");
-			printList(firstRight);
-			int flageps=0;
-			while(firstRight!=NULL)
-			{
-				int id=firstRight->id;
-				if(id!=1)
-				{
-					Table[left-(Terms+1)][id-1]=R;
-					printf("\nTable value\n");
-					printList(Table[left-(Terms+1)][id-1]->rhs);
-				}
-				else
-				{
-					flageps=1;
-				}
-				firstRight=firstRight->next;
-			}
-			if(flageps==1)
-			{
-				flageps=0;
-				List followleft=findInRule(follow,left)->rhs;//followid(left);
-				printf("followleft\n");
-				printList(followleft);
-				while(followleft!=NULL)
-				{
-					int id=followleft->id;
-					if(id!=1)
-					{	
-						Table[left-(Terms+1)][id-1]=R;
-						printf("Table value 2\n");
-						printRule(Table[left-(Terms+1)][id-1]);
-					}
-					else
-					{
-						flageps=1;
-					}
-					followleft=followleft->next;
-				}
-				if(flageps==1)
-				{
-					Table[left-(Terms+1)][Terms]=R;
-				}
-
-
-			}
-			
-			R=R->next;
-			
-		}
-		
-
-
-}
-void printParseTable(Rule Table[nTerms][nTerms])
-{
-	for (int i = 0; i < nTerms; ++i)
+Rule ** populateParseTable(Rule grammar,Rule follows,Rule **ParseTable) {
+	Rule R=grammar;
+	while(R!=NULL)
 	{
-		/* code */
-		for (int j = 0; j < Terms; ++j)
-		{
-			/* code */
-			printRule(Table[i][j]);
+		int left=R->lhs;
+		List right=R->rhs;
+		List firstRight=findFirstForList(grammar,right);
+		List rfirst = firstRight;							// new code
+		while(rfirst!=NULL) {
+			if(rfirst->id == 1) {
+				rfirst = rfirst->next;
+				continue;
+			}
+			if(ParseTable[R->lhs - NONTERMLOW][rfirst->id - 2] != NULL) {
+				printf("Not first attempt and got [%d] ", R->lhs);
+				printSingleRule(ParseTable[R->lhs - NONTERMLOW][rfirst->id - 2]);
+				p();
+				printf("Not first and want to add ");
+				printSingleRule(R);
+				p();
+			}
+			else {
+				/*printf("Now adding into the table 1st-1  [%d, %d]: [%d] ", R->lhs - NONTERMLOW, rfirst->id - 2, R->lhs);
+				printSingleRule(R);
+				p();*/
+			}
+			ParseTable[R->lhs - NONTERMLOW][rfirst->id - 2] = R;				// change 56 hardcoded value
+			rfirst = rfirst->next;
 		}
-		printf("\n");
+		if(findInList(firstRight, 1)) {
+			Rule followLeft = findInRule(follows, R->lhs);					//found follow
+			/*printf("Printing follow of left which is %d: ", R->lhs);
+			printSingleRule(followLeft);
+			p();*/
+			List followItr = followLeft->rhs;
+			while(followItr!=NULL) {
+				/*printf("Now adding into the table 1st-2  [%d, %d]: [%d] ", R->lhs - NONTERMLOW, followItr->id - 2, R->lhs);
+				printList(followItr);
+				p();*/
+				ParseTable[R->lhs - NONTERMLOW][followItr->id - 2] = R;			// change 56 hardcoded value
+				followItr = followItr->next;
+			}
+		}
+		R = R->next;
+	}
+	return ParseTable;
+}
+void printParseTable(Rule **ParseTable) {
+	for (int i = 0; i < NUMBEROFNONTERMS; ++i) {
+		for (int j = 0; j < NUMBEROFTERMS; ++j) {
+			if(ParseTable[i][j] == NULL) {
+				//printf("NULL");
+			}
+			else {
+				printf("PT[%2d][%2d]: ", i, j);
+				printSingleRule(ParseTable[i][j]);
+				printf("\n");
+			}
+		}
 	}
 }
 
-
+Rule ** createEmptyParseTable(int m, int n) {
+	Rule ** table = (Rule **) malloc (sizeof(Rule *) * m);
+	for(int i=0; i<m;i++) {
+		table[i] = (Rule *) malloc (sizeof(Rule)*n);
+		for(int j=0;j<n;j++)
+			table[i][j] = NULL;
+	}
+	return table;
+}
 
 Treenode createLeafnode(int id) {
 	Leafnode node = (Leafnode) malloc (sizeof(struct leafnode));

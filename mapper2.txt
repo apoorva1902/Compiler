@@ -1,9 +1,9 @@
 eps
+id
 plus
 star
 brop
 brcl
-id
 $
 <E>
 <E_>

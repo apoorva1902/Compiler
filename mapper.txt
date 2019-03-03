@@ -1,4 +1,5 @@
 eps
+$
 TK_ASSIGNOP
 TK_COMMENT
 TK_FIELDID
@@ -52,7 +53,6 @@ TK_EQ
 TK_GT
 TK_GE
 TK_NE
-$
 <program>
 <mainFunction>
 <otherFunctions>

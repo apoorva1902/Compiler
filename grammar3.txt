@@ -1,0 +1,10 @@
+<bexpr> <bterm> <bexpr_>
+<bexpr_> or <bterm> <bexpr_>
+<bexpr_> eps
+<bterm> <bfactor> <bterm_>
+<bterm_> and <bfactor> <bterm_>
+<bterm_> eps
+<bfactor> not <bfactor>
+<bfactor> brop <bexpr> brcl
+<bfactor> true
+<bfactor> false
