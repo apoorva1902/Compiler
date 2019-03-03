@@ -13,3 +13,7 @@ git push -u origin master  //for pushing to apoorva1902(first pull from nischcha
 
 //////dont do---
 git remote add orginnishchay ""
+
+git add .
+git commit -m""
+git push
