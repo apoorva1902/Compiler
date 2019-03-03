@@ -1,4 +1,3 @@
-
 #include "lexer.h"
 
 //Key word table hash table implementation adjust this code in lexer.h 
@@ -1135,7 +1134,7 @@ token_info * getNextToken(FILE *fp) {
 	}
 }
 
-int main() {
+/*int main() {
 	//buf = buf1;
 	//printf("%u %u %u\n", buf, buf1,buf2);
 	initializekt();
@@ -1154,4 +1153,4 @@ int main() {
 	
 	return 0;
 
-}
+}*/
