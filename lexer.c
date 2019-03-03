@@ -385,6 +385,12 @@ token_info * getNextToken(FILE *fp) {
 						state=100;//source code finish state
 						return tok;
 						break;	
+
+					default:
+						state=112;
+						tok->lexeme[lexPtr++] = currChar;
+						break;
+
 					
 				}
 				break;
@@ -911,7 +917,16 @@ token_info * getNextToken(FILE *fp) {
 				else
 				{
 					currPtr--;
-					state=110;//error state
+					tok->lexeme[lexPtr-1]='\0';//remove . from lexeme
+					lexPtr--; //next position to be filled in lexeme
+					currPtr--;
+					state=8;
+					//shdnt be error like 25.> is no lexical error 
+					//25 is TK_NUM . is TK_DOT > is TK_GT
+					//shd just retract to return 25
+					//i.e. same behavior as from state 4 when encountering other
+					//previously we were sending this as error state
+					//state=110;//error state
 				}
 				break;
 			case 6:
@@ -924,7 +939,14 @@ token_info * getNextToken(FILE *fp) {
 				else
 				{
 					currPtr--;
-					state=111;//error state
+					tok->lexeme[lexPtr-1]='\0';//remove D1 from lexeme
+					lexPtr--; //next position to be filled in lexeme
+					currPtr--;
+					tok->lexeme[lexPtr-1]='\0';//remove . from lexeme
+					lexPtr--; //next position to be filled in lexeme
+					currPtr--;
+					state=8;
+					//state=111;//error state
 				}
 				break;
 			case 7:
@@ -1084,6 +1106,19 @@ token_info * getNextToken(FILE *fp) {
 				
 				break;
 			case 111:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						
+						return tok;
+						break;
+				}
+				
+				break;
+			case 112:
 				switch(currChar)
 				{
 					default:

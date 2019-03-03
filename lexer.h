@@ -14,7 +14,7 @@ typedef struct {
 
 char buf1[BUFFER_SIZE];
 char buf2[BUFFER_SIZE];
-int currPtr=511;
+int currPtr=511;//later put in main shndt be initiazed here
 int line_number=1;
 char *buf=buf2;
 FILE *getStream(FILE *fp);
