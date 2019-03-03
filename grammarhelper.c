@@ -1,5 +1,9 @@
 #include "grammarhelper.h"
 
+void p() {
+	printf("\n");
+}
+
 List createNode(int id, bool isterminal) {
 	List node = (List) malloc (sizeof(struct list));
 	node->id = id;
@@ -52,7 +56,7 @@ List deleteNode(List l, List node){
 void printList(List l) {
 	List temp = l;
 	char s[100];
-	for(; temp!=NULL; printf( "%d [%d] -> ", temp->id, temp->isterminal), temp=temp->next);
+	for(; temp!=NULL; printf( "%3d [%d] -> ", temp->id, temp->isterminal), temp=temp->next);
 }
 
 Rule createRule(int lhs, List rhs) {
@@ -77,7 +81,12 @@ Rule addRule(Rule r, Rule rule) {
 
 void printRule(Rule r) {
 	Rule temp = r;
-	for(; temp!=NULL; printf("%d ===> ", temp->lhs), printList(temp->rhs), printf("\n"), temp=temp->next);
+	for(; temp!=NULL; printf("%3d ===> ", temp->lhs), printList(temp->rhs), printf("\n"), temp=temp->next);
+}
+
+void printSingleRule(Rule r) {
+	printf("%3d ===> ", r->lhs); 
+	printList(r->rhs); 
 }
 
 Rule createGrammarFromFile(char *filename, char *mappername) {
@@ -254,6 +263,76 @@ Rule findInRuleRhs(Rule r, int id){
 	return NULL;
 }
 
+Rule newFollow(Rule grammar, Rule firsts) {
+	if(!firsts)
+		firsts = computeFirsts(grammar);
+	Rule follow = NULL;
+	Rule temp = grammar;
+	while(temp!=NULL) {
+		if(!findInRule(follow, temp->lhs)) {
+			Rule callingFunctions = NULL;
+			List followList = localFollow(grammar, firsts, follow, callingFunctions, temp);
+			Rule toadd = createRule(temp->lhs, followList);
+			follow = addRule(follow, toadd);
+		}
+		temp = temp->next;
+	}
+	return follow;
+}
+
+List localFollow(Rule grammar, Rule firsts, Rule follows, Rule callingFunctions, Rule tocompute) {
+	if(findInRule(callingFunctions, tocompute->lhs))
+		return NULL;
+	callingFunctions = addRule(callingFunctions, createRule(tocompute->lhs, tocompute->rhs));
+	Rule existingFollow = findInRule(follows, tocompute->lhs);
+	if(existingFollow != NULL)
+		return existingFollow->rhs;
+	List localfollow = NULL;
+	if(tocompute->lhs == STARTSYMBOL)
+		localfollow = addNode(localfollow, createNode(DOLLAR, 1));
+	Rule occurences = findNextOccurence(grammar, tocompute->lhs);
+	while(occurences!=NULL) {
+		List pointinlist = findInList(occurences->rhs , tocompute->lhs) -> next;
+		List localList = findFirstForList(grammar, pointinlist);
+		localfollow = noduplicateadd(localfollow, localList);
+		if(pointinlist == NULL || findInList(localList, EPS)) {
+			Rule followofleft = findInRule(follows,  occurences->lhs);
+			if(followofleft == NULL) {
+				List followListofLeft = localFollow(grammar, firsts, follows, callingFunctions, occurences);
+				if(followListofLeft != NULL) {
+					followofleft = createRule(occurences->lhs, followListofLeft);
+					follows = addRule(follows, followofleft);
+					localfollow = noduplicateadd(localfollow, followofleft->rhs);
+				}
+			}
+			else
+				localfollow = noduplicateadd(localfollow, followofleft->rhs);
+		}
+		occurences = findNextOccurence(occurences->next, tocompute->lhs);
+	}
+	return localfollow;
+}
+
+List noduplicateadd(List parent, List toadd) {
+	List itr = toadd;
+	while(itr!=NULL) {
+		if(itr->id != EPS && findInList(parent, itr->id)==NULL)
+			parent = addNode(parent, createNode(itr->id, itr->isterminal));
+		itr = itr->next;
+	}
+	return parent;
+}
+
+Rule findNextOccurence(Rule grammar, int id) {
+	Rule temp = grammar;
+	while(temp!=NULL) {
+		List pointinlist = findInList(temp->rhs, id);
+		if(pointinlist != NULL)
+			return temp;
+		temp = temp->next;
+	}
+	return NULL;
+}
 
 Rule computeSingleFollow(Rule grammar, Rule firstSet, Rule followSet, int id){
 	Rule checkFollowExists=findInRule(followSet,id);
@@ -316,12 +395,21 @@ Rule computeSingleFollow(Rule grammar, Rule firstSet, Rule followSet, int id){
 						}
 						if(potentialFollow==NULL){
 							List tempFollow=computeSingleFollow(grammar,firstSet,followSet,currTemp->lhs)->rhs;
+							printf("currTemp for %d = ", id);
+							printRule(currTemp);
+							p();
+							printf("tempFollow for %d = ",id);
+							printList(tempFollow);
+							p();
 							while(tempFollow !=NULL){
 								// printf("Sixth while\n");
 								if(findInList(follow->rhs,tempFollow->id)==NULL && tempFollow->id != EPS){
 									follow->rhs=addNode(follow->rhs,createNode(tempFollow->id,tempFollow->isterminal));
 								}
 								tempFollow=tempFollow->next;
+								printf("Kunal's currFollow for %d = ", id);
+								printSingleRule(follow);
+								p();
 							}
 							break;
 						}
