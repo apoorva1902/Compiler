@@ -172,12 +172,21 @@ Rule findInRule(Rule r, int id) {
 	return NULL;
 }
 
+Rule findSpecificRule(Rule r, int id, int toexist) {
+	Rule startpointer = findInRule(r, id);
+	Rule itr = startpointer;
+	while(itr->lhs == startpointer->lhs) {
+		if(findInList(itr->rhs, toexist) != NULL)
+			return itr;
+		itr = itr->next;
+	}
+	return NULL;
+}
+
 Rule computeFirsts(Rule grammar) {
 	Rule temp = grammar;
 	Rule firsts = NULL;
 	while(temp!=NULL) {
-		//if(temp->lhs == 102)
-		//	return firsts;
 		Rule inFirsts = findInRule(firsts, temp->lhs);
 		if(!inFirsts) {
 			List fst = NULL;
@@ -206,6 +215,7 @@ List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
 	List l = NULL;
 	Rule production = parentProduction;
 	while(production!=NULL && production->lhs == parentProduction->lhs) {
+
 		List temp = production->rhs;
 		while(temp!=NULL) {
 			if(temp->isterminal) {
@@ -221,7 +231,7 @@ List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
 					Rule newrule = createRule(nonterm->lhs, aheadList);
 					firsts = addRule(firsts, newrule);
 				}
-				if(findInList(aheadList, 1)) {				// if eps in encountered non terminal
+				if(findInList(aheadList, EPS)) {				// if eps in encountered non terminal
 					if(temp->next == NULL) {			// if it was the last non terminal (eps should be added in firsts list)
 						l = addNode(l, aheadList);
 						break;
@@ -229,7 +239,7 @@ List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
 					else {						// if not the last, (no need to add eps)
 						List newtemp;
 						for(newtemp = aheadList; newtemp!=NULL; newtemp = newtemp->next) {
-							if(newtemp->id != 1) {
+							if(newtemp->id != EPS) {
 								List newnode = createNode(newtemp->id, newtemp->isterminal);
 								l = addNode(l, newnode);
 							}
@@ -248,7 +258,7 @@ List localFirst(Rule grammar, Rule parentProduction, Rule firsts) {
 	return l;
 }
 
-Rule findInRuleRhs(Rule r, int id){
+/*Rule findInRuleRhs(Rule r, int id){
 	Rule temp =r;
 	while(temp!=NULL){
 		List rhs=temp->rhs;
@@ -261,7 +271,7 @@ Rule findInRuleRhs(Rule r, int id){
 		temp=temp->next;
 	}
 	return NULL;
-}
+}*/
 
 Rule newFollow(Rule grammar, Rule firsts) {
 	if(!firsts)
@@ -334,7 +344,7 @@ Rule findNextOccurence(Rule grammar, int id) {
 	return NULL;
 }
 
-Rule computeSingleFollow(Rule grammar, Rule firstSet, Rule followSet, int id){
+/*Rule computeSingleFollow(Rule grammar, Rule firstSet, Rule followSet, int id){
 	Rule checkFollowExists=findInRule(followSet,id);
 	if(checkFollowExists->rhs!=NULL && checkFollowExists->rhs->id != DUMMYNODEID ){
 		return checkFollowExists;
@@ -457,4 +467,4 @@ Rule computeFollow(Rule grammar,Rule firsts){
 		i++;
 	}
 	return followSet;
-}
+}*/

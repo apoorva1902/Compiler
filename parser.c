@@ -1,14 +1,20 @@
 #include "hardcode.h"
 #include "parser.h"
 
-int main() {
-	Rule grammar=createGrammarFromFile("backgrammar.txt","backmapper.txt");
-	//printRule(grammar);
+int main(int argc, char **argv) {
+	Rule grammar=createGrammarFromFile(argv[1],argv[2]);
+	// printRule(grammar);
+	// printList(findFirstForList(grammar, findInRule(grammar, 8)->rhs));
+	// p();p();p();
 	Rule firsts = computeFirsts(grammar);
+	// printRule(firsts);
+	// p();p();p();
 	Rule follow = newFollow(grammar, firsts);
-	//printRule(follow);
-	Rule ** parsetable = createEmptyParseTable(51, 54);
+	// printRule(follow);
+	// p();p();p();
+	Rule ** parsetable = createEmptyParseTable(NUMBEROFNONTERMS, NUMBEROFTERMS);
 	parsetable = populateParseTable(grammar, follow, parsetable);
+	// p();p();p();
 	printParseTable(parsetable);
 	return 0;
 }
@@ -25,25 +31,34 @@ Rule ** populateParseTable(Rule grammar,Rule follows,Rule **ParseTable) {
 				rfirst = rfirst->next;
 				continue;
 			}
-			ParseTable[R->lhs - 56][rfirst->id - 2] = R;				// change 56 hardcoded value
-			printf("[%d] ",R->lhs);			
-			printSingleRule(R);
-			printf("\n");
+			if(ParseTable[R->lhs - NONTERMLOW][rfirst->id - 2] != NULL) {
+				printf("Not first attempt and got [%d] ", R->lhs);
+				printSingleRule(ParseTable[R->lhs - NONTERMLOW][rfirst->id - 2]);
+				p();
+				printf("Not first and want to add ");
+				printSingleRule(R);
+				p();
+			}
+			else {
+				/*printf("Now adding into the table 1st-1  [%d, %d]: [%d] ", R->lhs - NONTERMLOW, rfirst->id - 2, R->lhs);
+				printSingleRule(R);
+				p();*/
+			}
+			ParseTable[R->lhs - NONTERMLOW][rfirst->id - 2] = R;				// change 56 hardcoded value
 			rfirst = rfirst->next;
 		}
 		if(findInList(firstRight, 1)) {
-			Rule followLeft = findInRule(follows, R->lhs);
-			Rule followItr = followLeft;
-			printf("Printing follow set for %d -> ", R->lhs);
+			Rule followLeft = findInRule(follows, R->lhs);					//found follow
+			/*printf("Printing follow of left which is %d: ", R->lhs);
 			printSingleRule(followLeft);
-			printf("\n");
+			p();*/
+			List followItr = followLeft->rhs;
 			while(followItr!=NULL) {
-				ParseTable[R->lhs - 56][followItr->lhs - 2] = R;			// change 56 hardcoded value
+				/*printf("Now adding into the table 1st-2  [%d, %d]: [%d] ", R->lhs - NONTERMLOW, followItr->id - 2, R->lhs);
+				printList(followItr);
+				p();*/
+				ParseTable[R->lhs - NONTERMLOW][followItr->id - 2] = R;			// change 56 hardcoded value
 				followItr = followItr->next;
-				printf("[%d] ",R->lhs);
-				printSingleRule(R);
-				printf("\n");
-
 			}
 		}
 		R = R->next;
@@ -51,8 +66,8 @@ Rule ** populateParseTable(Rule grammar,Rule follows,Rule **ParseTable) {
 	return ParseTable;
 }
 void printParseTable(Rule **ParseTable) {
-	for (int i = 0; i < nTerms; ++i) {
-		for (int j = 0; j < Terms; ++j) {
+	for (int i = 0; i < NUMBEROFNONTERMS; ++i) {
+		for (int j = 0; j < NUMBEROFTERMS; ++j) {
 			if(ParseTable[i][j] == NULL) {
 				//printf("NULL");
 			}

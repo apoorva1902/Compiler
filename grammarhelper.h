@@ -3,14 +3,24 @@
 #include<string.h>
 #include<stdbool.h>
 
-#define DUMMYNODEID -2 //This is used in the case when A->BC and then B->C
 #define MAX_RULES 100
 #define MAXSIZE 30
 #define EPS 1
-#define NONTERMINALLOW 56 //56
-#define NONTERMINALHI 106 //106
-#define STARTSYMBOL 56	//56
-#define DOLLAR 2 
+// #define STARTSYMBOL 8	//56
+// #define STARTSYMBOL 56
+#define STARTSYMBOL 10
+// #define DOLLAR 7
+// #define DOLLAR 2
+#define DOLLAR 9
+// #define NUMBEROFNONTERMS 5  //51
+// #define NUMBEROFNONTERMS 51
+#define NUMBEROFNONTERMS 5
+// #define NUMBEROFTERMS 6  //54
+// #define NUMBEROFTERMS 54
+#define NUMBEROFTERMS 8
+// #define NONTERMLOW 8 //56
+// #define NONTERMLOW 56
+#define NONTERMLOW 10
 
 struct list{
 	int id;
