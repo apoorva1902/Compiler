@@ -5,11 +5,18 @@
 #define TOKEN_SIZE 30
 #define BUFFER_SIZE 512
 
+union value
+	{
+		int vali;
+		float valf;
+	};
 typedef struct {
 	char lexeme[MAX_SIZE];
 	char token[TOKEN_SIZE];
 	long line_number;
-	char value[MAX_SIZE];
+	union value val;
+
+	//char value[MAX_SIZE];
 } token_info;
 
 char buf1[BUFFER_SIZE];

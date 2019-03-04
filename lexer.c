@@ -195,7 +195,7 @@ token_info * getNextToken(FILE *fp) {
 	memset(tok->lexeme, '\0', sizeof(tok->lexeme));
 	int state=1, lexPtr=0;
 	char currChar;
-	
+	int flag_Exceeded_TOKEN_SIZE=0;
 	//printf("%u %u %u\n", buf, buf1,buf2);
 	
 	for(int i=0;i<600;i++) {
@@ -224,102 +224,102 @@ token_info * getNextToken(FILE *fp) {
 		/*vip In each iteration(in each separate case statement) either do 
 		* currPtr--(backtracking this character(not using))
 		* or
-		* tok->lexeme[lexPtr++]=currChar;//putting this char in lexeme
+		* if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}//putting this char in lexeme
 		*/
 		switch(state) {
 			case 1:
 				switch(currChar) {//state =3 incorporated int the same switch later shd be differented  in a different switch
 					case '+':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_PLUS");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '-':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_MINUS");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '*':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_MUL");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '/':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_DIV");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '[':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_SQL");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case ']':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_SQR");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '.':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_DOT");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case ',':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_COMMA");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case ';':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_SEM");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case ':':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_COLON");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '(':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_OP");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case ')':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_CL");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case '~':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=2;
 						tok->line_number=line_number;
 						strcpy(tok->token, "TK_NOT");
 						state=3;
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 					case ' ':case '\t':
 						state=1;
 						break;
@@ -331,50 +331,50 @@ token_info * getNextToken(FILE *fp) {
 						state=42;
 						break;
 					case '<':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=36;
 						break;
 					case '>':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=33;
 						break;
 
 					case '!':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=31;
 						break;
 					case '=':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=29;
 						break;
 					case '&':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=26;
 						break;
 					case '@':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=23;
 						break;
 					case '#':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=20;
 						break;
 					case '_':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=15;
 						break;
 					case 'b':case 'c':case 'd':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=11;
 						
 						break;
 					case 'a':case 'e' ... 'z':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=9;
 						
 						break;
 					case '0'... '9':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=4;
 						
 						break;	
@@ -395,16 +395,16 @@ token_info * getNextToken(FILE *fp) {
 					//add all other cases above
 
 					case '$':
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						tok->line_number=line_number;
 						strcpy(tok->token,"Dollar");
 						state=100;//source code finish state
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;	
 
 					default:
 						state=112;
-						tok->lexeme[lexPtr++] = currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						break;
 
 					
@@ -428,7 +428,7 @@ token_info * getNextToken(FILE *fp) {
 
 					default:
 						state=42;
-						//tok->lexeme[lexPtr++]=currChar;
+						//if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						//dont return comment just %
 						break;
 				}
@@ -439,7 +439,9 @@ token_info * getNextToken(FILE *fp) {
 					default:
 						currPtr--;//retract '$'
 						//dont write state=1; here and similarly everywhere
-						return tok;
+						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}dont return TK_comment parser cant handle
+						return getNextToken(fp);
+						
 						break;
 				}
 				break;
@@ -447,11 +449,11 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '-':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=38;
 						break;
 					case '=':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=37;
 						break;
 					default:
@@ -469,7 +471,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_LE");
 						currPtr--;//backtrack this character
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				break;
@@ -477,7 +479,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '-':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=39;
 						break;
 					default:
@@ -492,7 +494,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '-':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=40;
 						break;
 					default:
@@ -509,7 +511,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ASSIGNOP");
 						currPtr--;//backtrack this character
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 
 						break;
 						
@@ -523,14 +525,14 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_LT");
 						currPtr--;//bactract this character
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 				}
 				break;
 			case 33:
 				switch(currChar)
 				{
 					case '=':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=34;
 						break;
 					default:
@@ -547,7 +549,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_GE");
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break; 
 				}
 				break;
@@ -559,7 +561,7 @@ token_info * getNextToken(FILE *fp) {
 							tok->line_number=line_number;
 							strcpy(tok->token,"TK_GT");
 							
-							return tok;
+							if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 							break;
 
 				}
@@ -569,7 +571,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '=':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=32;
 						break;
 					default:
@@ -586,7 +588,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_NE");
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 
 						break;
 				}
@@ -595,7 +597,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '=':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=30;
 						break;
 					default:
@@ -611,7 +613,7 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_EQ");
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				break;
@@ -619,7 +621,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '&':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=27;
 						break;
 					default:
@@ -632,7 +634,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '&':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=28;
 						break;
 					
@@ -651,7 +653,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_AND");
 							
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 
 				}
@@ -660,7 +662,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '@':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=24;
 						break;
 					default:
@@ -673,7 +675,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					case '@':
-						tok->lexeme[lexPtr++]=currChar;
+						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						state=25;
 						break;
 					
@@ -692,7 +694,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_OR");
 							
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 
 				}
@@ -701,7 +703,7 @@ token_info * getNextToken(FILE *fp) {
 			case 20:
 				if(isLa(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=21;
 				}
 				else
@@ -713,7 +715,7 @@ token_info * getNextToken(FILE *fp) {
 			case 21:
 				if(isLa(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=21;
 				}
 				else
@@ -730,7 +732,7 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_RECORDID");
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;	
 
 				}
@@ -738,7 +740,7 @@ token_info * getNextToken(FILE *fp) {
 			case 15:
 				if(isLa(currChar)|| isLA(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=16;
 				}
 				else
@@ -750,12 +752,12 @@ token_info * getNextToken(FILE *fp) {
 			case 16:
 				if(isLa(currChar)|| isLA(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=16;
 				}
 				else if(isD1(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=18;
 				}
 				else 
@@ -767,7 +769,7 @@ token_info * getNextToken(FILE *fp) {
 			case 18:
 				if(isD1(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=18;
 				}
 				else
@@ -783,7 +785,7 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_FUNID");
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				break;
@@ -793,27 +795,27 @@ token_info * getNextToken(FILE *fp) {
 					currPtr--;
 					tok->line_number=line_number;
 					strcpy(tok->token,"TK_MAIN");
-					return tok;
+					if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 				}
 				else
 				{
 					currPtr--;
 					tok->line_number=line_number;
 					strcpy(tok->token,"TK_FUNID");
-					return tok;
+					if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 							
 					
 				}
 			case 11:
 				if(isLa(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=9;
 						
 				}
 				else if(isD2(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=12;
 						
 				}
@@ -826,12 +828,13 @@ token_info * getNextToken(FILE *fp) {
 			case 12:
 				if(isbcd(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=12;
 				}
 				else if(isD2(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=13;
 				}
 				else
@@ -843,7 +846,7 @@ token_info * getNextToken(FILE *fp) {
 			case 13:
 				if(isD2(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=13;
 				}
 				else
@@ -859,14 +862,14 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;
 						tok->line_number=line_number;
 						strcpy(tok->token,"TK_ID");
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				break;
 			case 9:
 				if(isLa(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=9;
 				}
 				else
@@ -886,25 +889,25 @@ token_info * getNextToken(FILE *fp) {
 				{
 					tok->line_number=line_number;
 					strcpy(tok->token,keyword_token);
-					return tok;
+					if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 				}	
 				else
 				{
 					tok->line_number=line_number;
 					strcpy(tok->token,"TK_FIELDID");
-					return tok;
+					if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 
 				}
 				break;
 			case 4:
 				if(isD1(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=4;	
 				}
 				else if (currChar=='.')
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=5;
 				}
 				else
@@ -919,42 +922,48 @@ token_info * getNextToken(FILE *fp) {
 					default:
 						currPtr--;
 						tok->line_number=line_number;
+						tok->val.vali=strtod(tok->lexeme,NULL);
 						strcpy(tok->token,"TK_NUM");
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				break;
 			case 5:
 				if(isD1(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=6;
 					
 				}
 				else
 				{
-					currPtr--;
+					/*currPtr--;
 					tok->lexeme[lexPtr-1]='\0';//remove . from lexeme
 					lexPtr--; //next position to be filled in lexeme
 					currPtr--;
 					state=8;
+					*/
 					//shdnt be error like 25.> is no lexical error 
 					//25 is TK_NUM . is TK_DOT > is TK_GT
 					//shd just retract to return 25
 					//i.e. same behavior as from state 4 when encountering other
 					//previously we were sending this as error state
-					//state=110;//error state
+					
+					currPtr--;
+					state=110;//error state
+					
 				}
 				break;
 			case 6:
 				if(isD1(currChar))
 				{
-					tok->lexeme[lexPtr++]=currChar;
+					if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 					state=7;
 					
 				}
 				else
 				{
+					/*
 					currPtr--;
 					tok->lexeme[lexPtr-1]='\0';//remove D1 from lexeme
 					lexPtr--; //next position to be filled in lexeme
@@ -963,7 +972,11 @@ token_info * getNextToken(FILE *fp) {
 					lexPtr--; //next position to be filled in lexeme
 					currPtr--;
 					state=8;
-					//state=111;//error state
+					*/
+
+					
+					currPtr--;
+					state=111;//error state
 				}
 				break;
 			case 7:
@@ -972,8 +985,10 @@ token_info * getNextToken(FILE *fp) {
 					default:
 						currPtr--;
 						tok->line_number=line_number;
+						tok->val.valf=strtod(tok->lexeme,NULL);
+						
 						strcpy(tok->token,"TK_RNUM");
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 
@@ -986,14 +1001,16 @@ token_info * getNextToken(FILE *fp) {
 			case 100:
 				//source code finish state
 				//is never executed
-				break;
-
-
+				switch(currChar)
+				{
+					break;	
+				}
+				
 			/*error states from 101
 			 *for now simply return the lexeme with TK_ERROR
 			 *later can be modifed case wise	
 			*/
-			case 101:
+			/*case 101:
 				switch(currChar)
 				{
 					default:
@@ -1001,7 +1018,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						//dont write state=1; here
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				break;
@@ -1013,7 +1030,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1026,7 +1043,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1039,7 +1056,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1052,7 +1069,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1065,7 +1082,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1078,7 +1095,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1091,7 +1108,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1104,7 +1121,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1117,7 +1134,7 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1130,7 +1147,21 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
 						
-						return tok;
+						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
+						break;
+				}
+				
+				break;*/
+			case 101 ... 111:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR");
+						tok->line_number=line_number;
+						printf("Unknown symbol %s\n",tok->lexeme );
+						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
+						return getNextToken(fp);
 						break;
 				}
 				
@@ -1142,8 +1173,26 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;//backtract this character
 						strcpy(tok->token,"TK_ERROR");//have to print Unknown symbol from state 1 
 						tok->line_number=line_number;
+						printf("Unknown pattern %s\n",tok->lexeme );
 						
-						return tok;
+						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
+						return getNextToken(fp);
+						break;
+				}
+				
+				break;
+			case 113:
+				switch(currChar)
+				{
+					default:
+						currPtr--;//backtract this character
+						strcpy(tok->token,"TK_ERROR_TOKEN_SIZE");//have to print Unknown symbol from state 1 
+						//strcpy(tok->token,"Identifier is longer than prescribed length of 20 char");//have to print Unknown symbol from state 1 
+						tok->line_number=line_number;
+						printf("Identifier is longer than the prescribed length of %d characters\n",MAX_SIZE );
+						return getNextToken(fp);
+						//return tok;
+						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;
 				}
 				
@@ -1168,7 +1217,8 @@ int main() {
 	while(strcmp(tok->token,"Dollar")!=0)
 	{
 		tok= getNextToken(fp);
-		printf("Next token is %s | line_number=%ld | lexeme=%s\n", tok->token,tok->line_number,tok->lexeme);
+		//if()
+		printf("Next token is %s | line_number=%ld | lexeme=%s | val=%f\n", tok->token,tok->line_number,tok->lexeme,tok->val.valf);
 	}
 	//tok = getNextToken(fp);
 	//printf("First token is %s\n", tok->token);
