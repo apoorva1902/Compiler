@@ -4,7 +4,7 @@
 #define MAX_SIZE 50
 #define TOKEN_SIZE 30
 #define BUFFER_SIZE 512
-
+#define END_SRC_CODE '|'
 union value
 	{
 		int vali;

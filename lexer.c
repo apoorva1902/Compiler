@@ -22,6 +22,13 @@ int hash(char str[TOKEN_SIZE])//,int keyword_table_size)
 } 
 
 
+void writeErrorToFile (char* filename,char * error){
+	FILE* fp =fopen(filename,"a");
+	fprintf(fp, "%s\n", error);
+	fclose(fp);
+}
+
+
 void add_keyword_table(char key[TOKEN_SIZE],char value[TOKEN_SIZE])
 {
 	//printf("%s\n",key );
@@ -162,7 +169,7 @@ FILE *getStream(FILE *fp) {
 			int char_read = fread(buf2, sizeof(char), sizeof(buf2)-1, fp);
 			if(feof(fp))
 	    	{
-				buf2[char_read] = '$';
+				buf2[char_read] = END_SRC_CODE;
 			}
 			printf("Buffer 2:\n%s\n",buf2);
 		}
@@ -178,7 +185,7 @@ FILE *getStream(FILE *fp) {
 		int char_read = fread(buf1, sizeof(char), sizeof(buf1)-1, fp);
 		if(feof(fp))
 	    {
-		 	buf1[char_read] = '$';
+		 	buf1[char_read] = END_SRC_CODE;
 		}
 		printf("Buffer 1:\n%s\n",buf1);
 		
@@ -214,7 +221,7 @@ token_info * getNextToken(FILE *fp) {
 		}
 		//printf("%d %c|\n",currPtr,buf[currPtr] );
 		currChar = buf[currPtr++];
-		/*if(currChar=='$')
+		/*if(currChar==END_SRC_CODE)
 		{	
 		}*/
 		//printf("%u %u %u %i %c\n", buf, buf1,buf2,i,currChar);
@@ -394,10 +401,10 @@ token_info * getNextToken(FILE *fp) {
 
 					//add all other cases above
 
-					case '$':
+					case END_SRC_CODE:
 						if(lexPtr<TOKEN_SIZE){tok->lexeme[lexPtr++]=currChar;}else{flag_Exceeded_TOKEN_SIZE=1;}
 						tok->line_number=line_number;
-						strcpy(tok->token,"Dollar");
+						strcpy(tok->token,"END_SRC_CODE");
 						state=100;//source code finish state
 						if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						break;	
@@ -413,8 +420,8 @@ token_info * getNextToken(FILE *fp) {
 			case 42:
 				switch(currChar)
 				{
-					case '$':
-						currPtr--;//so that in next iteration it goes to state 1 and case '$'
+					case END_SRC_CODE:
+						currPtr--;//so that in next iteration it goes to state 1 and case END_SRC_CODE
 						//fall through
 					case '\n':
 						tok->lexeme[lexPtr++]='%';							
@@ -437,7 +444,7 @@ token_info * getNextToken(FILE *fp) {
 				switch(currChar)
 				{
 					default:
-						currPtr--;//retract '$'
+						currPtr--;//retract END_SRC_CODE
 						//dont write state=1; here and similarly everywhere
 						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}dont return TK_comment parser cant handle
 						return getNextToken(fp);
@@ -1159,7 +1166,10 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;//backtract this character
 						strcpy(tok->token,"TK_ERROR");
 						tok->line_number=line_number;
-						printf("Unknown symbol %s\n",tok->lexeme );
+						char error[80];
+						sprintf(error,"Line %ld: Unknown pattern %s",tok->line_number,tok->lexeme);
+						writeErrorToFile("lexerError.txt",error);
+						printf("Unknown pattern %s\n",tok->lexeme );
 						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						return getNextToken(fp);
 						break;
@@ -1173,8 +1183,10 @@ token_info * getNextToken(FILE *fp) {
 						currPtr--;//backtract this character
 						strcpy(tok->token,"TK_ERROR");//have to print Unknown symbol from state 1 
 						tok->line_number=line_number;
-						printf("Unknown pattern %s\n",tok->lexeme );
-						
+						char error[80];
+						sprintf(error,"Line %ld: Unknown symbol %s",tok->line_number,tok->lexeme);
+						writeErrorToFile("lexerError.txt",error);
+						printf("Unknown symbol %s\n",tok->lexeme );
 						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						return getNextToken(fp);
 						break;
@@ -1189,6 +1201,9 @@ token_info * getNextToken(FILE *fp) {
 						strcpy(tok->token,"TK_ERROR_TOKEN_SIZE");//have to print Unknown symbol from state 1 
 						//strcpy(tok->token,"Identifier is longer than prescribed length of 20 char");//have to print Unknown symbol from state 1 
 						tok->line_number=line_number;
+						char error[80];
+						sprintf(error,"Line %ld: Identifier is longer than the prescribed length of %d characters",tok->line_number,MAX_SIZE);
+						writeErrorToFile("lexerError.txt",error);
 						printf("Identifier is longer than the prescribed length of %d characters\n",MAX_SIZE );
 						return getNextToken(fp);
 						//return tok;
@@ -1214,7 +1229,7 @@ int main() {
 	//fflush(stdout);
 	//currPtr=511;
 	token_info * tok ;	
-	while(strcmp(tok->token,"Dollar")!=0)
+	while(strcmp(tok->token,"END_SRC_CODE")!=0)
 	{
 		tok= getNextToken(fp);
 		//if()
@@ -1222,6 +1237,7 @@ int main() {
 	}
 	//tok = getNextToken(fp);
 	//printf("First token is %s\n", tok->token);
+	fclose(fp);
 	
 	return 0;
 
