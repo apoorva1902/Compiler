@@ -28,3 +28,4 @@ int flag_backtrack_to_prev_buff;
 FILE *getStream(FILE *fp);
 token_info * getNextToken(FILE *fp);
 void initializekt();
+void writeErrorToFile (char * error);

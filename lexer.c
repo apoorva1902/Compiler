@@ -22,8 +22,8 @@ int hash(char str[TOKEN_SIZE])//,int keyword_table_size)
 } 
 
 
-void writeErrorToFile (char* filename,char * error){
-	FILE* fp =fopen(filename,"a");
+void writeErrorToFile (char * error){
+	FILE* fp =fopen("error.txt","a");
 	fprintf(fp, "%s\n", error);
 	fclose(fp);
 }
@@ -1168,7 +1168,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						char error[80];
 						sprintf(error,"Line %ld: Unknown pattern %s",tok->line_number,tok->lexeme);
-						writeErrorToFile("lexerError.txt",error);
+						writeErrorToFile(error);
 						printf("Unknown pattern %s\n",tok->lexeme );
 						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						return getNextToken(fp);
@@ -1185,7 +1185,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						char error[80];
 						sprintf(error,"Line %ld: Unknown symbol %s",tok->line_number,tok->lexeme);
-						writeErrorToFile("lexerError.txt",error);
+						writeErrorToFile(error);
 						printf("Unknown symbol %s\n",tok->lexeme );
 						//if(!flag_Exceeded_TOKEN_SIZE){return tok;}else{state=113;}
 						return getNextToken(fp);
@@ -1203,7 +1203,7 @@ token_info * getNextToken(FILE *fp) {
 						tok->line_number=line_number;
 						char error[80];
 						sprintf(error,"Line %ld: Identifier is longer than the prescribed length of %d characters",tok->line_number,MAX_SIZE);
-						writeErrorToFile("lexerError.txt",error);
+						writeErrorToFile(error);
 						printf("Identifier is longer than the prescribed length of %d characters\n",MAX_SIZE );
 						return getNextToken(fp);
 						//return tok;

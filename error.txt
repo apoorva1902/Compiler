@@ -1,0 +1,5 @@
+Line 8: Identifier is longer than the prescribed length of 50 characters
+Line 10: Unknown pattern 5000.7
+Line 13: Unknown pattern &&
+Line 28: Unknown symbol $
+Line 29: Unknown pattern <--
